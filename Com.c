@@ -1,8 +1,9 @@
-
 #include "Com.h"
- //#include "Com_Pbcfg.h"
 #include <stdio.h>
-//  signal signals[];
+
+const Com_ConfigType *ComConfig;
+signal *ComSignals;
+pdu *ComIPDUs;
 
 int main()
 {
@@ -10,6 +11,12 @@ int main()
 	int x = s.bitPosition;
 	printf("signal position : %d", x);
 	return 0;
+}
+
+void Com_Init(const Com_ConfigType *config)
+{
+        ComConfig = config;
+        const pdu *IPDUs = ComConfig->comPdus;
 }
 
 uint8 Com_SendSignal(Com_SignalIdType SignalId, const void *SignalDataPtr)

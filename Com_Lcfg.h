@@ -5,8 +5,11 @@
 
 typedef struct 
 {
-    signal * signals;
-    pdu * pdus;
+    const signal * comSignals;
+    const pdu * comPdus;
  
 }Com_ConfigType;
+
+extern const Com_ConfigType configuration;
+
 #endif

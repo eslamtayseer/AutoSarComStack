@@ -4,7 +4,7 @@
 // signal signals[];
 // pdu pdus[];
 
-Com_ConfigType configuration = {
-	.signals = signals,
-	.pdus = pdus
+const Com_ConfigType configuration = {
+	.comSignals = signals,
+	.comPdus = pdus
 };

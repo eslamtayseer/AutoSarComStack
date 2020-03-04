@@ -8,11 +8,13 @@
 typedef struct 
 {
     uint8 bitPosition;
+    uint8 ComUpdateBitPosition;
     uint8 bitSize;
     Com_SignalIdType signalId;
     uint32 pduId;
     signalType signalType;
     const void *signalDataPtr;
+    uint32 ComSignalInitValue;
 
 }signal;
 
@@ -23,11 +25,12 @@ typedef struct
     pduType pduType;
     uint16 repitions;
     ComIPduDirection_type ComIPduDirection;
+    uint8 ComTxIPduUnusedAreasDefault;
 
 }pdu;
 
-extern  signal  signals[];
-extern  pdu  pdus[];
+extern  const signal  signals[];
+extern  const pdu  pdus[];
 
 
 
