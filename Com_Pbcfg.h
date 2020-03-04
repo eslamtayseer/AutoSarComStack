@@ -4,6 +4,8 @@
 #include "Std_Types.h"
 #include "ComStack_Types.h"
 #define NUM_OF_SIGNALS 2
+#define NUM_OF_IPDUS 2
+
 
 typedef struct 
 {

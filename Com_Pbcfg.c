@@ -13,7 +13,7 @@ const signal signals []={
     },
     {
         .bitPosition = 3,
-        .ComUpdateBitPosition = 4
+        .ComUpdateBitPosition = 4,
         .bitSize = 1,
         .signalId = 1,
         .pduId = 0,
