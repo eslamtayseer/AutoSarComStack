@@ -1,39 +1,43 @@
 #ifndef __COM_PBCFG_H
 #define __COM_PBCFG_H
 
+#include <stddef.h>
+
 #include "Std_Types.h"
 #include "ComStack_Types.h"
-#define NUM_OF_SIGNALS 2
-#define NUM_OF_IPDUS 2
 
+#define NUM_OF_SINGALS 2
+#define NUM_OF_PDUS 1
 
-typedef struct 
+typedef struct
 {
-    uint8 bitPosition;
-    uint8 ComUpdateBitPosition;
-    uint8 bitSize;
-    Com_SignalIdType signalId;
-    uint32 pduId;
-    signalType signalType;
-    const void *signalDataPtr;
-    uint32 ComSignalInitValue;
+  uint8 ComBitPosition;
+  uint8 ComUpdateBitPosition;
+  uint8 ComBitSize;
+  Com_SignalIdType ComSignalId;
+  uint32 ComPDUId;
+  Com_SignalType ComSignalType;
+  uint32 ComSignalInitValue;
+} Com_ConfigSignalType;
 
-}signal;
-
-typedef struct 
+typedef struct
 {
-    Com_PduIdType pduId;
-    signal * signals;
-    pduType pduType;
-    uint16 repitions;
-    ComIPduDirection_type ComIPduDirection;
-    uint8 ComTxIPduUnusedAreasDefault;
+  Com_PduIdType ComPDUId;
+  Com_PduType ComPDUType;
+  Com_PduDirectionType ComPDUDirection;
+  uint8 ComTxIPduUnusedAreasDefault;
+  uint8 ComPDUSize;
+} Com_ConfigPDUType;
 
-}pdu;
+typedef struct
+{
+  void *ComPDUDataPtr;
+  uint8 ComPDUId;
+  Com_PduType ComPDUType;
+  Com_PduDirectionType ComPDUDirection;
+} Com_PDU;
 
-extern  const signal  signals[];
-extern  const pdu  pdus[];
-
-
+extern const Com_ConfigSignalType signals[];
+extern const Com_ConfigPDUType pdus[];
 
 #endif

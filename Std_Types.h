@@ -11,8 +11,7 @@
 #define E_OK 0x00
 #define E_NOT_OK 0X01
 
-
-typedef unsigned char			boolean;
+typedef unsigned char			      boolean;
 typedef unsigned char         	uint8;          /*           0 .. 255             */
 typedef unsigned short        	uint16;         /*           0 .. 65535           */
 typedef unsigned long         	uint32;         /*           0 .. 4294967295      */
@@ -23,7 +22,6 @@ typedef signed long long      	sint64;
 typedef unsigned long long    	uint64;         /*       0..18446744073709551615  */
 typedef float                 	float32;
 typedef double                	float64;
-
 
 typedef uint8 Std_ReturnType;
 

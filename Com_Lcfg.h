@@ -3,12 +3,11 @@
 
 #include "Com_Pbcfg.h"
 
-typedef struct 
+typedef struct
 {
-    const signal * comSignals;
-    const pdu * comPdus;
- 
-}Com_ConfigType;
+  const Com_ConfigSignalType *signals;
+  const Com_ConfigPDUType    *pdus;
+} Com_ConfigType;
 
 extern const Com_ConfigType configuration;
 

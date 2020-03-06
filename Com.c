@@ -1,86 +1,54 @@
-#include "Com.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <string.h>
 
-const Com_ConfigType *ComConfig;
-signal *ComSignals;
-pdu *ComIPDUs;
+#include "Com.h"
+#include "Com_Lcfg.h"
 
-int main()
+const Com_ConfigType *ComConfiguration;
+
+Com_PDU *ComPDUs;
+
+int main ()
 {
-	// signal s = signals[1];
-	// int x = s.bitPosition;
-	// printf("signal position : %d", x);
-	Com_Init(&configuration);
-	return 0;
+  Com_Init (&configuration);
+  printf ("I-PDU data : %llu\n", * (uint64 *) ComPDUs[0].ComPDUDataPtr);
+  return 0;
 }
 
-void Com_Init(const Com_ConfigType *config)
+void Com_Init (const Com_ConfigType *config)
 {
-        ComConfig = config;
-        const pdu *IPDUs = ComConfig->comPdus;
-		ComIPDUs = (pdu*)malloc(NUM_OF_IPDUS * sizeof(pdu)); 
-		for(int i =0;i<NUM_OF_IPDUS;i++){
-			ComIPDUs[i].ComIPduDirection=IPDUs[i].ComIPduDirection;
-			ComIPDUs[i].ComTxIPduUnusedAreasDefault=IPDUs[i].ComTxIPduUnusedAreasDefault;
-			ComIPDUs[i].pduId=IPDUs[i].pduId;
-			ComIPDUs[i].pduType=IPDUs[i].pduType;
-			ComIPDUs[i].repitions=IPDUs[i].repitions;
-			// ComIPDUs[i].signals=IPDUs[i].signals;
-			for (int j =0; IPDUs[i].signals+j != NULL;j++){
-				ComIPDUs[i].signals[j].bitPosition=IPDUs[i].signals[j].bitPosition;
-				ComIPDUs[i].signals[j].bitSize=IPDUs[i].signals[j].bitSize;
-				ComIPDUs[i].signals[j].ComSignalInitValue=IPDUs[i].signals[j].ComSignalInitValue;
-				ComIPDUs[i].signals[j].ComUpdateBitPosition=IPDUs[i].signals[j].ComUpdateBitPosition;
-				ComIPDUs[i].signals[j].pduId=IPDUs[i].signals[j].pduId;
-				ComIPDUs[i].signals[j].signalDataPtr=IPDUs[i].signals[j].signalDataPtr;
-				ComIPDUs[i].signals[j].signalId=IPDUs[i].signals[j].signalId;
-				ComIPDUs[i].signals[j].signalType=IPDUs[i].signals[j].signalType;
-
-				printf_s("Com signal bit position %d \n",ComIPDUs[i].signals[j].bitPosition);
-
-			}
-			printf_s("comipdu direction %d \n",ComIPDUs[i].ComIPduDirection);
-		}
-
-
-		// printf_s("Direction %d",IPDUs[0].ComIPduDirection);
+  ComConfiguration = config;
+  ComPDUs = (Com_PDU *) malloc (NUM_OF_PDUS * sizeof (Com_PDU));
+  
+  const Com_ConfigPDUType *ConfigPDUs = ComConfiguration->pdus;
+  const Com_ConfigSignalType *ConfigSignals = ComConfiguration->signals;
+  
+  /* Initializing each I-PDU */
+  for (int i = 0; i < NUM_OF_PDUS; i++)
+  {
+    ComPDUs[i].ComPDUDataPtr = (void *) malloc (sizeof (void));
+    memset (ComPDUs[i].ComPDUDataPtr, ConfigPDUs[i].ComTxIPduUnusedAreasDefault, ConfigPDUs[i].ComPDUSize);
+    ComPDUs[i].ComPDUDirection = ConfigPDUs[i].ComPDUDirection;
+    ComPDUs[i].ComPDUId = ConfigPDUs[i].ComPDUId;
+    ComPDUs[i].ComPDUType = ConfigPDUs[i].ComPDUType;
+  }
+  
+  /* Initializing each signal in each I-PDU */
+  for (int i = 0; i < NUM_OF_SINGALS; i++)
+  {
+    /* initialization of signals with ComSignalInitValue */
+    Com_SetBits (ComPDUs[ConfigSignals[i].ComPDUId].ComPDUDataPtr, ConfigSignals[i].ComSignalInitValue, \
+                              ConfigSignals[i].ComBitPosition, ConfigSignals[i].ComBitSize);
+    
+    /* Clear update-bits of each signal */
+    Com_SetBits (ComPDUs[ConfigSignals[i].ComPDUId].ComPDUDataPtr, 0, ConfigSignals[i].ComUpdateBitPosition, 1);
+  }
 }
 
-uint8 Com_SendSignal(Com_SignalIdType SignalId, const void *SignalDataPtr)
+void Com_SetBits (void *DataPtr, uint32 Data, uint64 DataStartPosition, uint8 DataSize)
 {
-	if (checkSignalID(SignalId))
-	{
-		signal updatedSignal = signals[SignalId];
-		updatedSignal.signalDataPtr = SignalDataPtr;
-		pdu updatedSignalPdu=pdus[updatedSignal.pduId];
-		
-
-		switch (updatedSignal.signalType)
-		{
-		case PENDING:
-
-			break;
-		case TRIGGERED:
-
-			break;
-		case TRIGGERED_ON_CHANGE_WITHOUT_REPETITION:
-			updatedSignalPdu.repitions++;
-
-			break;
-		case TRIGGERD_ON_CHANGE:
-
-			break;
-		}
-		return E_OK;
-	}
-	else
-	{
-		return E_NOT_OK;
-	}
-}
-boolean checkSignalID(Com_SignalIdType id)
-{
-	if (id < NUM_OF_SIGNALS)
-		return TRUE;
-	return FALSE;
+  int mask = (int) (pow (2, DataSize) - 1);
+  * (uint64 *)DataPtr = (* (uint64 *)DataPtr & ~(mask << DataStartPosition)) | ((Data << DataStartPosition) & (mask << DataStartPosition));
 }
