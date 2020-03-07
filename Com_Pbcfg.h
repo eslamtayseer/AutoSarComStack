@@ -23,7 +23,7 @@ typedef struct
 typedef struct
 {
   Com_PduIdType ComPDUId;
-  Com_PduType ComPDUType;
+  Com_ComTxModeMode ComTxModeMode;
   Com_PduDirectionType ComPDUDirection;
   uint8 ComTxIPduUnusedAreasDefault;
   uint8 ComPDUSize;
@@ -33,7 +33,7 @@ typedef struct
 {
   void *ComPDUDataPtr;
   uint8 ComPDUId;
-  Com_PduType ComPDUType;
+  Com_ComTxModeMode ComTxModeMode;
   Com_PduDirectionType ComPDUDirection;
   Com_PDUStatusType ComPDUStatus;
 } Com_PDU;

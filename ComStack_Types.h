@@ -23,7 +23,7 @@ typedef enum{
     MIXED,
     PERIODIC,
     DIRECT
-} Com_PduType;
+} Com_ComTxModeMode;
 
 typedef enum
 {

@@ -26,7 +26,7 @@ const Com_ConfigPDUType pdus[] =
 {
   {
     .ComPDUId = 0,
-    .ComPDUType = DIRECT,
+    .ComTxModeMode = DIRECT,
     .ComPDUDirection = SEND,
     .ComTxIPduUnusedAreasDefault = 255,
     .ComPDUSize = 8

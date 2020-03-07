@@ -21,4 +21,5 @@ void           Com_SetBits              (void                 *DataPtr,
                                          uint32                Data,
                                          uint64                DataStartPosition,
                                          uint8                 DataSize);
+void           Com_DeInit               (void);
 #endif
