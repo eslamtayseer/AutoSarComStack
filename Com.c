@@ -12,14 +12,15 @@ Com_PDU *ComPDUs;
 
 Com_StatusType ComStatus = COM_UININT;
 const Com_ConfigPDUType *ConfigPDUs ;
-const Com_ConfigSignalType *ConfigSignals ;
+const Com_ConfigSignalType *ConfigSignals ; 
 
 int main ()
 {
   Com_Init (&configuration);
   printf ("I-PDU data : %llu\n", * (uint64 *) ComPDUs[0].ComPDUDataPtr);
-  uint8 * data = 111;
-  printf_s("Signal sent %d \n",Com_SendSignal(0,data));
+  uint8  data =0xA;
+  // printf_s("Signal sent %d \n",Com_SendSignal(0,(void *)&data));
+  printf_s("Signal sent %d \n",Com_SendSignal(0,&data));
   printf ("I-PDU data : %llu\n", * (uint64 *) ComPDUs[0].ComPDUDataPtr);
 
 
@@ -65,8 +66,8 @@ uint8 Com_SendSignal (Com_SignalIdType SignalId, const void *SignalDataPtr)
 	{
 		Com_ConfigSignalType updatedSignal = signals[SignalId];
 		Com_PDU singalPDU = ComPDUs[ConfigSignals[SignalId].ComPDUId];
-    printf_s("Send signal %d \n",SignalDataPtr);
-    Com_SetBits (singalPDU.ComPDUDataPtr,SignalDataPtr , ConfigSignals[SignalId].ComBitPosition, ConfigSignals[SignalId].ComBitSize);
+    printf_s("Send signal %u \n",*(uint32 *)SignalDataPtr);
+    Com_SetBits (singalPDU.ComPDUDataPtr,*(uint32 *) SignalDataPtr , ConfigSignals[SignalId].ComBitPosition, ConfigSignals[SignalId].ComBitSize);
     Com_SetBits (singalPDU.ComPDUDataPtr,1 ,ConfigSignals[SignalId].ComUpdateBitPosition,1);
 
 		switch (updatedSignal.ComSignalType)
@@ -161,12 +162,12 @@ void Com_MainFunctionTx (void)
 
 void Com_SetBits (void *DataPtr, uint32 Data, uint64 DataStartPosition, uint8 DataSize)
 {
-  printf("send bits data %d \n", Data);
+  printf("send bits data %u \n", Data);
   printf("send bits data start position %d \n", DataStartPosition);
   printf("send bits data size %d \n", DataSize);
-  int mask = (int) (pow (2, DataSize) - 1);
-  * (uint64 *)DataPtr = (* (uint64 *)DataPtr & ~(mask << DataStartPosition)) | ((Data << DataStartPosition) & (mask << DataStartPosition));
-  printf("send bits data pointer %d \n", DataPtr);
+  uint64 mask = (uint64) (pow (2, DataSize) - 1);
+ * (uint64 *)DataPtr = (* (uint64 *)DataPtr & ~(mask << DataStartPosition)) | ((Data << DataStartPosition) & (mask << DataStartPosition));
+  printf("send bits data stored in data pointer %u \n", * (uint64 *)DataPtr);
 
 }
 
