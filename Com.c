@@ -16,6 +16,7 @@ int main ()
 {
   Com_Init (&configuration);
   printf ("I-PDU data : %llu\n", * (uint64 *) ComPDUs[0].ComPDUDataPtr);
+  Com_DeInit();
   return 0;
 }
 
@@ -78,7 +79,16 @@ void Com_MainFunctionTx (void)
     return;
   }
   
-  
+  for (int i = 0; i < NUM_OF_PDUS; i++)
+  {
+    switch (ComPDUs[i].ComTxModeMode)
+    {
+      case DIRECT:
+        break;
+      case PERIODIC:
+        break;
+    }
+  }
 }
 
 void Com_SetBits (void *DataPtr, uint32 Data, uint64 DataStartPosition, uint8 DataSize)
@@ -90,4 +100,11 @@ void Com_SetBits (void *DataPtr, uint32 Data, uint64 DataStartPosition, uint8 Da
 void Com_DeInit (void)
 {
   /* This function should free all of the allocated memory used by the COM Module */ 
+  for (int i = 0; i < NUM_OF_PDUS; i++)
+  {
+    free (ComPDUs[i].ComPDUDataPtr);
+  }
+  
+  free ((void *)ComPDUs);
+  ComStatus = COM_UININT;
 }
