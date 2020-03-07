@@ -27,15 +27,17 @@ typedef struct
   Com_PduDirectionType ComPDUDirection;
   uint8 ComTxIPduUnusedAreasDefault;
   uint8 ComPDUSize;
+  uint8 ComTxModeNumberOfRepetitions;
 } Com_ConfigPDUType;
 
 typedef struct
 {
   void *ComPDUDataPtr;
-  uint8 ComPDUId;
+  Com_PduIdType ComPDUId;
   Com_ComTxModeMode ComTxModeMode;
   Com_PduDirectionType ComPDUDirection;
   Com_PDUStatusType ComPDUStatus;
+  uint8 ComTxModeNumberOfRepetitions;
 } Com_PDU;
 
 extern const Com_ConfigSignalType signals[];
