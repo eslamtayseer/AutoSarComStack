@@ -25,4 +25,10 @@ typedef enum{
     DIRECT
 } Com_PduType;
 
+typedef enum
+{
+  STARTED,
+  STOPPED
+} Com_PDUStatusType;
+
 #endif

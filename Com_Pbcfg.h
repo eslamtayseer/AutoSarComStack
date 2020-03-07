@@ -35,6 +35,7 @@ typedef struct
   uint8 ComPDUId;
   Com_PduType ComPDUType;
   Com_PduDirectionType ComPDUDirection;
+  Com_PDUStatusType ComPDUStatus;
 } Com_PDU;
 
 extern const Com_ConfigSignalType signals[];

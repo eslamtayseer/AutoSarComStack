@@ -33,6 +33,7 @@ void Com_Init (const Com_ConfigType *config)
     ComPDUs[i].ComPDUDirection = ConfigPDUs[i].ComPDUDirection;
     ComPDUs[i].ComPDUId = ConfigPDUs[i].ComPDUId;
     ComPDUs[i].ComPDUType = ConfigPDUs[i].ComPDUType;
+    ComPDUs[i].ComPDUStatus = STARTED;
   }
   
   /* Initializing each signal in each I-PDU */
@@ -45,6 +46,25 @@ void Com_Init (const Com_ConfigType *config)
     /* Clear update-bits of each signal */
     Com_SetBits (ComPDUs[ConfigSignals[i].ComPDUId].ComPDUDataPtr, 0, ConfigSignals[i].ComUpdateBitPosition, 1);
   }
+}
+
+Std_ReturnType Com_TriggeredIPDUSend (Com_PduIdType PduId)
+{
+  const Com_ConfigSignalType *ConfigSignals = ComConfiguration->signals;
+  
+  if (ComPDUs[PduId].ComPDUStatus != STARTED)
+  {
+    return E_NOT_OK;
+  }
+  
+  /* TODO: sending IPDU to PDU-Router */
+  /* Clearing signals update-bits */
+  for (int i = 0; i < NUM_OF_SINGALS; i++)
+  {
+    Com_SetBits (ComPDUs[ConfigSignals[i].ComPDUId].ComPDUDataPtr, 0, ConfigSignals[i].ComUpdateBitPosition, 1);
+  }
+  
+  return E_OK;
 }
 
 void Com_SetBits (void *DataPtr, uint32 Data, uint64 DataStartPosition, uint8 DataSize)
