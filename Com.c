@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "Com.h"
-#include "Com_Lcfg.h"
+// #include "Com_Lcfg.h"
 
 const Com_ConfigType *ComConfiguration;
 
@@ -137,8 +137,8 @@ void Com_MainFunctionTx (void)
     switch (ComPDUs[i].ComTxModeMode)
     {
       case DIRECT:
-          if(ComPDUs[i].ComTxModeNumberOfRepetitions>0){
-           if(Com_TriggeredIPDUSend(&ComPDUs[i])==E_NOT_OK) {
+          if(ComPDUs[i].ComTxModeNumberOfRepetitions>0 && ComPDUs[i].ComPDUDirection==SEND){
+           if(Com_TriggeredIPDUSend(&ComPDUs[i])==E_OK) {
              ComPDUs[i].ComTxModeNumberOfRepetitions--;
            }
            else{
