@@ -11,18 +11,15 @@ const Com_ConfigType *ComConfiguration;
 Com_PDU *ComPDUs;
 
 Com_StatusType ComStatus = COM_UININT;
-const Com_ConfigPDUType *ConfigPDUs ;
-const Com_ConfigSignalType *ConfigSignals ;
 
 int main ()
 {
   Com_Init (&configuration);
-  printf ("I-PDU data : %llu\n", * (uint64 *) ComPDUs[0].ComPDUDataPtr);
-  uint8 * data = 111;
-  printf_s("Signal sent %d \n",Com_SendSignal(0,data));
-  printf ("I-PDU data : %llu\n", * (uint64 *) ComPDUs[0].ComPDUDataPtr);
-
-
+  uint64 SignalValue = 0;
+  if (Com_ReceiveSignal (0, &SignalValue) == E_OK)
+    printf ("Receive Signal 0 %llu\n", SignalValue);
+  else
+    printf ("Not Successful\n");
   Com_DeInit();
   return 0;
 }
@@ -32,8 +29,8 @@ void Com_Init (const Com_ConfigType *config)
   ComConfiguration = config;
   ComPDUs = (Com_PDU *) malloc (NUM_OF_PDUS * sizeof (Com_PDU));
   
-  /*const Com_ConfigPDUType*/ ConfigPDUs = ComConfiguration->pdus;
-  /*const Com_ConfigSignalType */ConfigSignals = ComConfiguration->signals;
+  const Com_ConfigPDUType *ConfigPDUs = ComConfiguration->pdus;
+  const Com_ConfigSignalType *ConfigSignals = ComConfiguration->signals;
   
   /* Initializing each I-PDU */
   for (int i = 0; i < NUM_OF_PDUS; i++)
@@ -59,37 +56,37 @@ void Com_Init (const Com_ConfigType *config)
   
   ComStatus = COM_INIT;
 }
+
 uint8 Com_SendSignal (Com_SignalIdType SignalId, const void *SignalDataPtr)
 {
+  const Com_ConfigSignalType *ConfigSignals = ComConfiguration->signals;
+  
 	if (CheckSignalId(SignalId))
 	{
 		Com_ConfigSignalType updatedSignal = signals[SignalId];
 		Com_PDU singalPDU = ComPDUs[ConfigSignals[SignalId].ComPDUId];
-    printf_s("Send signal %d \n",SignalDataPtr);
-    Com_SetBits (singalPDU.ComPDUDataPtr,SignalDataPtr , ConfigSignals[SignalId].ComBitPosition, ConfigSignals[SignalId].ComBitSize);
-    Com_SetBits (singalPDU.ComPDUDataPtr,1 ,ConfigSignals[SignalId].ComUpdateBitPosition,1);
+    Com_SetBits (singalPDU.ComPDUDataPtr, *(uint32 *)SignalDataPtr, ConfigSignals[SignalId].ComBitPosition, ConfigSignals[SignalId].ComBitSize);
+    Com_SetBits (singalPDU.ComPDUDataPtr, 1, ConfigSignals[SignalId].ComUpdateBitPosition, 1);
 
 		switch (updatedSignal.ComSignalType)
 		{
-		case PENDING:
+      case PENDING:
         // Not yet supported 
-			break;
-		case TRIGGERED:
-              if(singalPDU.ComTxModeMode== MIXED||singalPDU.ComTxModeMode== DIRECT) singalPDU.ComTxModeNumberOfRepetitions++;
-			break;
-		case TRIGGERED_ON_CHANGE_WITHOUT_REPETITION:
-              // if(singalPDU.ComTxModeMode== MIXED||singalPDU.ComTxModeMode== DIRECT) singalPDU.ComTxModeNumberOfRepetitions=1;
-
-			break;
-		case TRIGGERD_ON_CHANGE:
-              // if(singalPDU.ComTxModeMode== MIXED||singalPDU.ComTxModeMode== DIRECT) singalPDU.ComTxModeNumberOfRepetitions++;
-
-			break;
+        break;
+      case TRIGGERED:
+        if(singalPDU.ComTxModeMode== MIXED||singalPDU.ComTxModeMode== DIRECT)
+          singalPDU.ComTxModeNumberOfRepetitions++;
+        break;
+      case TRIGGERED_ON_CHANGE_WITHOUT_REPETITION:
+        // if(singalPDU.ComTxModeMode== MIXED||singalPDU.ComTxModeMode== DIRECT) singalPDU.ComTxModeNumberOfRepetitions=1;
+        break;
+      case TRIGGERD_ON_CHANGE:
+        // if(singalPDU.ComTxModeMode== MIXED||singalPDU.ComTxModeMode== DIRECT) singalPDU.ComTxModeNumberOfRepetitions++;
+        break;
       case TRIGGERED_WITHOUT_REPETITION:
-              if(singalPDU.ComTxModeMode== MIXED||singalPDU.ComTxModeMode== DIRECT) singalPDU.ComTxModeNumberOfRepetitions =1;
-
-
-			break;
+        if(singalPDU.ComTxModeMode== MIXED||singalPDU.ComTxModeMode== DIRECT)
+          singalPDU.ComTxModeNumberOfRepetitions =1;
+        break;
 		}
 		return E_OK;
 	}
@@ -98,6 +95,25 @@ uint8 Com_SendSignal (Com_SignalIdType SignalId, const void *SignalDataPtr)
 		return E_NOT_OK;
 	}
 }
+
+uint8 Com_ReceiveSignal (Com_SignalIdType SignalId, void *SignalDataPtr)
+{
+  if (!CheckSignalId (SignalId))
+    return E_NOT_OK;
+    
+  const Com_ConfigSignalType *ConfigSignals = ComConfiguration->signals;
+  
+  uint8 PduId = ConfigSignals[SignalId].ComPDUId;
+  if (ComPDUs[PduId].ComPDUDirection != RECIEVE)
+    return E_NOT_OK;
+  
+  uint64 mask = (uint64) (pow (2, ConfigSignals[SignalId].ComBitSize) - 1);
+  uint64 value = *(uint64 *)ComPDUs[PduId].ComPDUDataPtr & mask;
+  *(uint64 *)SignalDataPtr = value;
+  
+  return E_OK;
+}
+
 boolean CheckSignalId(Com_SignalIdType id)
 {
 	if (id < NUM_OF_SINGALS)
@@ -107,7 +123,7 @@ boolean CheckSignalId(Com_SignalIdType id)
 
 Std_ReturnType Com_TriggeredIPDUSend (Com_PduIdType PduId)
 {
-  // const Com_ConfigSignalType *ConfigSignals = ComConfiguration->signals;
+  const Com_ConfigSignalType *ConfigSignals = ComConfiguration->signals;
   
   if (ComPDUs[PduId].ComPDUStatus != STARTED)
   {
@@ -159,15 +175,16 @@ void Com_MainFunctionTx (void)
   }
 }
 
-void Com_SetBits (void *DataPtr, uint32 Data, uint64 DataStartPosition, uint8 DataSize)
+void Com_SetBits (void *DataPtr, uint32 Data, uint8 DataStartPosition, uint8 DataSize)
 {
-  printf("send bits data %d \n", Data);
-  printf("send bits data start position %d \n", DataStartPosition);
-  printf("send bits data size %d \n", DataSize);
   int mask = (int) (pow (2, DataSize) - 1);
   * (uint64 *)DataPtr = (* (uint64 *)DataPtr & ~(mask << DataStartPosition)) | ((Data << DataStartPosition) & (mask << DataStartPosition));
-  printf("send bits data pointer %d \n", DataPtr);
 
+}
+
+void Com_TxConfirmation (Com_PduIdType PduId)
+{
+  
 }
 
 void Com_DeInit (void)

@@ -9,7 +9,7 @@ const Com_ConfigSignalType signals[] =
     .ComSignalId = 0,
     .ComPDUId = 0,
     .ComSignalType = TRIGGERED_WITHOUT_REPETITION,
-    .ComSignalInitValue = 0
+    .ComSignalInitValue = 10
   },
   {
     .ComBitPosition = 9,
@@ -27,7 +27,7 @@ const Com_ConfigPDUType pdus[] =
   {
     .ComPDUId = 0,
     .ComTxModeMode = DIRECT,
-    .ComPDUDirection = SEND,
+    .ComPDUDirection = RECIEVE,
     .ComTxIPduUnusedAreasDefault = 255,
     .ComPDUSize = 8,
     .ComTxModeNumberOfRepetitions= 0
