@@ -4,7 +4,6 @@
 #include <string.h>
 
 #include "Com.h"
-#include "Com_Lcfg.h"
 
 const Com_ConfigType *ComConfiguration;
 
@@ -152,8 +151,8 @@ void Com_MainFunctionTx (void)
     switch (ComPDUs[i].ComTxModeMode)
     {
       case DIRECT:
-          if(ComPDUs[i].ComTxModeNumberOfRepetitions>0){
-           if(Com_TriggeredIPDUSend(&ComPDUs[i])==E_NOT_OK) {
+          if(ComPDUs[i].ComTxModeNumberOfRepetitions>0 && ComPDUs[i].ComPDUDirection==SEND){
+           if(Com_TriggeredIPDUSend(&ComPDUs[i])==E_OK) {
              ComPDUs[i].ComTxModeNumberOfRepetitions--;
            }
            else{
@@ -177,9 +176,8 @@ void Com_MainFunctionTx (void)
 
 void Com_SetBits (void *DataPtr, uint32 Data, uint8 DataStartPosition, uint8 DataSize)
 {
-  int mask = (int) (pow (2, DataSize) - 1);
-  * (uint64 *)DataPtr = (* (uint64 *)DataPtr & ~(mask << DataStartPosition)) | ((Data << DataStartPosition) & (mask << DataStartPosition));
-
+  uint64 mask = (uint64) (pow (2, DataSize) - 1);
+  *(uint64 *)DataPtr = (* (uint64 *)DataPtr & ~(mask << DataStartPosition)) | ((Data << DataStartPosition) & (mask << DataStartPosition));
 }
 
 void Com_TxConfirmation (Com_PduIdType PduId)
