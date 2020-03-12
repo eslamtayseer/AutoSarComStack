@@ -15,12 +15,12 @@ uint8          Com_SendSignal           (Com_SignalIdType      SignalId,
 uint8          Com_ReceiveSignal        (Com_SignalIdType      SignalId,
                                          void                 *SignalDataPtr);
 void           Com_MainFunctionTx       (void);
-Std_ReturnType Com_TriggeredIPDUSend    (Com_PduIdType         PduId);
+Std_ReturnType Com_TriggeredIPDUSend    (PduIdType         PduId);
 boolean        CheckSignalId            (Com_SignalIdType      id);
 void           Com_SetBits              (void                 *DataPtr,
                                          uint32                Data,
                                          uint8                DataStartPosition,
                                          uint8                 DataSize);
-void           Com_TxConfirmation       (Com_PduIdType         PduId);
+void           Com_TxConfirmation       (PduIdType         PduId);
 void           Com_DeInit               (void);
 #endif

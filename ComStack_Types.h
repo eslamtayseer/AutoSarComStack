@@ -4,7 +4,8 @@
 #include "Std_Types.h"
 
 typedef uint16 Com_SignalIdType ;
-typedef uint16 Com_PduIdType ;
+typedef uint16 PduIdType ;
+typedef uint16 PduLengthType ;
 
 typedef enum
 {
@@ -31,5 +32,13 @@ typedef enum
   STARTED,
   STOPPED
 } Com_PDUStatusType;
+
+
+typedef struct
+{
+         uint64 *           SduDataPtr;
+         uint8 *           MetaDataPtr;
+         PduLengthType   SduLength;
+} PduInfoType;
 
 #endif
