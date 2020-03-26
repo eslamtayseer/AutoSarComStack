@@ -44,7 +44,7 @@ typedef struct
   CanIfInitHohCfg           *CanIfDrvCfgs;
   CanIfRxPduCfg             *CanIfRxPdusCfgs;
   CanIfTxPduCfg             *CanIfTxPdusCfgs;
-} CanIf_ConfigType;
+} CanIfInitCfg;
 
 #endif
 
