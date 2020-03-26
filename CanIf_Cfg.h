@@ -16,10 +16,10 @@ typedef struct
   CanIfPduCanIdType          CanIfRxPduCanIdType;
   uint8                      CanIfRxPduDlc;
   CanIfHrhCfg               *CanIfRxPduHrhIdRef;
-  uint32                     CanIfTxPduId;
-  boolean                    CanIfTxPduReadNotifyStatus;
+  uint32                     CanIfRxPduId;
+  boolean                    CanIfRxPduReadNotifyStatus;
   boolean                    CanIfRxPduReadData;
-  CanIfPduUserConfirmationUL CanIfTxPduUserConfirmationUL;
+  CanIfPduUserConfirmationUL CanIfRxPduUserConfirmationUL;
 } CanIfRxPduCfg;
 
 typedef struct
