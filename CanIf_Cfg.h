@@ -6,6 +6,12 @@
 
 typedef struct
 {
+  CanIfHthCfg               *CanIfBufferHthRef;
+  uint8                      CanIfBufferSize;
+} CanIfBufferCfg;
+
+typedef struct
+{
   boolean CanIfFixedBuffer;
   boolean CanIfPrivateDlcCheck;
 } CanIfPrivateCfg;
@@ -24,7 +30,7 @@ typedef struct
 
 typedef struct
 {
-  // CanIfBufferCfg            *CanIfTxPduBufferRef;
+  CanIfBufferCfg            *CanIfTxPduBufferRef;
   uint32                     CanIfTxPduCanId;
   CanIfPduCanIdType          CanIfTxPduCanIdType;
   uint32                     CanIfTxPduId;
@@ -36,7 +42,6 @@ typedef struct
 
 typedef struct
 {
-  uint64                     CanIfMaxBufferSize;
   uint64                     CanIfMaxRxPduCfg;
   uint64                     CanIfMaxTxPduCfg;
   
