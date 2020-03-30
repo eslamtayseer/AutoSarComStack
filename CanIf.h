@@ -4,6 +4,7 @@
 #include "ComStack_Types.h"
 #include "CanIf_Types.h"
 #include "CanIf_Cfg.h"
+#include "Can_Types.h"
 
 void                CanIf_Init               (CanIf_ConfigType   *ConfigPtr);
 void                CanIf_DeInit             (void);
@@ -13,6 +14,6 @@ Std_ReturnType      CanIf_ReadRxPduData      (PduIdType           CanIfRxSduId,
                                               PduInfoType        *CanIfRxInfoPtr);
 void                CanIf_TxConfirmation     (PduIdType           CanTxPduId);
 void                CanIf_RxIndication       (const Can_HwType   *Mailbox,
-                                              const PduInfotype  *PduInfoPtr);
+                                              const PduInfoType  *PduInfoPtr);
 
 #endif

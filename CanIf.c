@@ -1,6 +1,6 @@
 #include "CanIf.h"
 
-void FindCanPduBySduId (PduIdType Id, CanIfTxPduCfg *CanIfPdu); /*Private function shouldn't be part of the exposed API*/
+boolean FindCanPduBySduId (PduIdType Id, CanIfTxPduCfg *CanIfPdu); /*Private function shouldn't be part of the exposed API*/
 
 const CanIf_ConfigType *Configuration;
 
@@ -14,20 +14,29 @@ void CanIf_Init (CanIf_ConfigType *ConfigPtr)
 Std_ReturnType CanIf_Transmit (PduIdType CanIfTxSduId, const PduInfoType *CanIfTxInfoPtr)
 {
   CanIfTxPduCfg *CanIfTxPdu;
-  if (FindCanPduId (CanIfTxSduId, CanIfTxPdu) == TRUE)
+  if (FindCanPduId (CanIfTxSduId, CanIfTxPdu) == TRUE && CanIfTxInfoPtr != 0)
   {
-    
+      Can_PduType canPdu;
+      canPdu.id =(*CanIfTxPdu).CanIfTxPduCanId;
+      canPdu.length =(*CanIfTxInfoPtr).SduLength;
+      canPdu.sdu = (*CanIfTxInfoPtr).SduDataPtr;
+      canPdu.swPduHandle =(*CanIfTxPdu).CanIfTxPduId ;
+   return can_write((*CanIfTxPdu).CanIfTxPduBufferRef->CanIfBufferHthRef,&canPdu);
+
   }
+  else{
+      return E_NOT_OK;
+    }
 }
 
 boolean FindCanPduBySduId (PduIdType Id, CanIfTxPduCfg *CanIfPdu)
 {
-  CanIfTxPduCfg *CanIfConfigTxPdus = Configuration->CanIfInitCfg->CanIfTxPdusCfgs;
-  uint8 CanIfConfigTxPdusNumber = Configuration->CanIfInitCfg->CanIfMaxTxPduCfg;
+  CanIfTxPduCfg *CanIfConfigTxPdus = Configuration->InitConfig->CanIfTxPdusCfgs;
+  uint8 CanIfConfigTxPdusNumber = Configuration->InitConfig->CanIfMaxTxPduCfg;
   
   for (int i = 0; i < CanIfConfigTxPdusNumber; i++)
   {
-    if (Id == CanIfConfigTxPdus[i]->CanIfTxPduId)
+    if (Id == CanIfConfigTxPdus[i].CanIfTxPduId)
     {
       CanIfPdu = &CanIfConfigTxPdus[i];
       return TRUE;
