@@ -29,7 +29,7 @@ boolean FindCanPduBySduId (PduIdType Id, CanIfTxPduCfg *CanIfPdu)
   {
     if (Id == CanIfConfigTxPdus[i]->CanIfTxPduId)
     {
-      CanIfPdu = CanIfConfigTxPdus[i];
+      CanIfPdu = &CanIfConfigTxPdus[i];
       return TRUE;
     }
   }
