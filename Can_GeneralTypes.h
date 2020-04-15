@@ -4,17 +4,28 @@
 #include "Std_Types.h"
 
 #define Can_IdType uint16
+
+typedef uint8 Can_HwHandleType;
+
+typedef enum
+{
+  EXTENDED,
+  MIXED,
+  STANDARD
+} Can_CanIdType;
+
+typedef enum
+{
+  BASIC,
+  FULL
+} Can_CanHandleType;
+
 typedef enum
 {
   POLLING,
   INTERRUPT
 } can_Processing;
 
-typedef enum
-{
-  STANDARD,
-  EXTENDED
-}Can_HwHandleType;
 typedef enum {
   RECEIVE,
   TRANSMIT
@@ -35,12 +46,6 @@ typedef struct
   uint8 *sdu;
 } Can_PduType;
 
-// typedef struct
-// {
-//   uint8 CanIndex;
-
-// }CanGeneral;
-
 typedef struct
 {
   boolean CanControllerActivation;
@@ -60,18 +65,20 @@ typedef struct
   uint8 CanControllerPropSeg;
   uint8 CanControllerSeg1;
   uint8 CanControllerSeg2;
-  // uint8 CanControllerSyncJumpWidth;
+  uint8 CanControllerSyncJumpWidth;
 
 } Can_CanControllerBaudrateConfig;
 
 typedef struct
 {
-Can_HwHandleType CanHandleType;
-uint8 CanHwObjectCount;
-// Can_IdType CanIdType;
-uint8 CanObjectId;
-Can_ObjectType CanObjectType; 
-Can_CanController* CanControllerRef;
+  Can_CanHandleType CanHandleType;
+  uint16 CanHwObjectCount;
+  Can_CanIdType CanIdType;
+  uint16 CanObjectId;
+  Can_ObjectType CanObjectType; 
+  Can_CanController* CanControllerRef;
+  
+  Can_HwType CanHwType;
 } Can_CanHardwareObject;
 
 typedef struct
@@ -86,5 +93,7 @@ typedef struct
   // CanGeneral * CanGeneralConfig;
   CanConfigSet *CanConfigSetConfig;
 } Can_ConfigType;
+
+extern const Can_ConfigType CanConfiguration;
 
 #endif
