@@ -1,7 +1,7 @@
 #ifndef __CAN_GENERALTYPES_H
 #define __CAN_GENERALTYPES_H
-#include "ComStack_Types.h"
-#include "Std_Types.h"
+#include "include/ComStack_Types.h"
+#include "include/Std_Types.h"
 
 #define Can_IdType uint16
 

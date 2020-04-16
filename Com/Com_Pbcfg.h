@@ -3,8 +3,8 @@
 
 #include <stddef.h>
 
-#include "Std_Types.h"
-#include "ComStack_Types.h"
+#include "include/Std_Types.h"
+#include "include/ComStack_Types.h"
 
 #define NUM_OF_SINGALS 2
 #define NUM_OF_PDUS 1
