@@ -1,6 +1,6 @@
 #include "Can_GeneralTypes.h"
 
-Can_CanControllerBaudrateConfig *CanControllersBaudRate = {
+Can_CanControllerBaudrateConfig CanControllersBaudRate[] = {
   {
     .CanControllerBaudRate = 500,
     .CanControllerBaudRateConfigID = 0,
@@ -11,10 +11,10 @@ Can_CanControllerBaudrateConfig *CanControllersBaudRate = {
   }
 };
 
-Can_CanController *CanControllers = {
+Can_CanController CanControllers[] = {
   {
     .CanControllerActivation = TRUE,
-    .CanControllerBaseAddress = 0xFFEC0000,
+    .CanControllerBaseAddress = 0x40040000,
     .CanControllerId = 0,
     .CanRxProcessing = INTERRUPT,
     .CanTxProcessing = INTERRUPT,
@@ -23,7 +23,7 @@ Can_CanController *CanControllers = {
 };
 
 
-Can_CanHardwareObject *CanHardwareObjects = {
+Can_CanHardwareObject CanHardwareObjects[] = {
   {
     .CanHandleType = FULL,
     .CanHwObjectCount = 1,
@@ -52,13 +52,13 @@ Can_CanHardwareObject *CanHardwareObjects = {
   }
 };
 
-CanConfigSet *ConfigSets = {
+CanConfigSet ConfigSets[] = {
   {
     .CanController = CanControllers,
     .CanHardwareObject = CanHardwareObjects
   }
-}
+};
 
 const Can_ConfigType CanConfiguration = {
   .CanConfigSetConfig = ConfigSets
-}
+};
