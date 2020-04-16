@@ -1,7 +1,7 @@
 #ifndef __CAN_GENERALTYPES_H
 #define __CAN_GENERALTYPES_H
-#include "include/ComStack_Types.h"
-#include "include/Std_Types.h"
+#include "../include/ComStack_Types.h"
+#include "../include/Std_Types.h"
 
 #define Can_IdType uint16
 
@@ -10,7 +10,7 @@ typedef uint8 Can_HwHandleType;
 typedef enum
 {
   EXTENDED,
-  MIXED,
+  CANID_MIXED,
   STANDARD
 } Can_CanIdType;
 
@@ -48,6 +48,17 @@ typedef struct
 
 typedef struct
 {
+  uint16 CanControllerBaudRate;
+  uint8 CanControllerBaudRateConfigID;
+  uint8 CanControllerPropSeg;
+  uint8 CanControllerSeg1;
+  uint8 CanControllerSeg2;
+  uint8 CanControllerSyncJumpWidth;
+
+} Can_CanControllerBaudrateConfig;
+
+typedef struct
+{
   boolean CanControllerActivation;
   uint32 CanControllerBaseAddress;
   uint8 CanControllerId;
@@ -57,17 +68,6 @@ typedef struct
   // CanCpuClockRef CanCpuClockRef;
 
 } Can_CanController;
-
-typedef struct
-{
-  uint8 CanControllerBaudRate;
-  uint8 CanControllerBaudRateConfigID;
-  uint8 CanControllerPropSeg;
-  uint8 CanControllerSeg1;
-  uint8 CanControllerSeg2;
-  uint8 CanControllerSyncJumpWidth;
-
-} Can_CanControllerBaudrateConfig;
 
 typedef struct
 {
