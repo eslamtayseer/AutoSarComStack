@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "Com.h"
-#include "PduR/PduR.h"
+#include "../PduR/PduR.h"
 
 const Com_ConfigType *ComConfiguration;
 
