@@ -14,7 +14,7 @@ void CanIf_Init (CanIf_ConfigType *ConfigPtr)
 Std_ReturnType CanIf_Transmit (PduIdType CanIfTxSduId, const PduInfoType *CanIfTxInfoPtr)
 {
   CanIfTxPduCfg *CanIfTxPdu;
-  if (FindCanPduId (CanIfTxSduId, CanIfTxPdu) == TRUE && CanIfTxInfoPtr != 0)
+  if (FindCanPduBySduId (CanIfTxSduId, CanIfTxPdu) == TRUE && CanIfTxInfoPtr != 0)
   {
       Can_PduType canPdu;
       canPdu.id =(*CanIfTxPdu).CanIfTxPduCanId;
