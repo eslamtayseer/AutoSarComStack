@@ -13,15 +13,15 @@ void CanIf_Init (CanIf_ConfigType *ConfigPtr)
 
 Std_ReturnType CanIf_Transmit (PduIdType CanIfTxSduId, const PduInfoType *CanIfTxInfoPtr)
 {
-  CanIfTxPduCfg *CanIfTxPdu;
-  if (FindCanPduBySduId (CanIfTxSduId, CanIfTxPdu) == TRUE && CanIfTxInfoPtr != 0)
+  CanIfTxPduCfg CanIfTxPdu;
+  if (FindCanPduBySduId (CanIfTxSduId, &CanIfTxPdu) == TRUE && CanIfTxInfoPtr != 0)
   {
       Can_PduType canPdu;
-      canPdu.id =(*CanIfTxPdu).CanIfTxPduCanId;
+      canPdu.id = CanIfTxPdu.CanIfTxPduCanId;
       canPdu.length =(*CanIfTxInfoPtr).SduLength;
       canPdu.sdu = (*CanIfTxInfoPtr).SduDataPtr;
-      canPdu.swPduHandle =(*CanIfTxPdu).CanIfTxPduId ;
-   return can_write((*CanIfTxPdu).CanIfTxPduBufferRef->CanIfBufferHthRef,&canPdu);
+      canPdu.swPduHandle = CanIfTxPdu.CanIfTxPduId ;
+   return E_OK; // can_write((*CanIfTxPdu).CanIfTxPduBufferRef->CanIfBufferHthRef,&canPdu);
 
   }
   else{
@@ -38,7 +38,7 @@ boolean FindCanPduBySduId (PduIdType Id, CanIfTxPduCfg *CanIfPdu)
   {
     if (Id == CanIfConfigTxPdus[i].CanIfTxPduId)
     {
-      CanIfPdu = &CanIfConfigTxPdus[i];
+      (*CanIfPdu) = CanIfConfigTxPdus[i];
       return TRUE;
     }
   }

@@ -27,7 +27,7 @@ CanIfRxPduCfg  RxPduCfg[] = { {
   }
 };
  CanIfInitCfg initCfg[] = { {
-   .CanIfMaxBufferSize = 2,
+   //.CanIfMaxBufferSize = 2,
    .CanIfMaxRxPduCfg = 1,
    .CanIfMaxTxPduCfg = 1,
 
@@ -37,6 +37,6 @@ CanIfRxPduCfg  RxPduCfg[] = { {
    .CanIfTxPdusCfgs = &TxPduCfg[0]
    }
 };
-const CanIf_ConfigType configuration ={
+const CanIf_ConfigType CanIfConfiguration ={
     .InitConfig =&initCfg[0]
 };
