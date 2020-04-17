@@ -36,9 +36,9 @@ typedef enum
 
 typedef struct
 {
-         uint64 *           SduDataPtr;
-         uint8 *           MetaDataPtr;
-         PduLengthType   SduLength;
+  uint8 *SduDataPtr;
+  uint8 *MetaDataPtr;
+  PduLengthType SduLength;
 } PduInfoType;
 
 #endif

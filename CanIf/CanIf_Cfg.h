@@ -82,6 +82,6 @@ typedef struct
 
 } CanIf_ConfigType;
 
-extern const CanIf_ConfigType configuration;
+extern const CanIf_ConfigType CanIfConfiguration;
 
 #endif
