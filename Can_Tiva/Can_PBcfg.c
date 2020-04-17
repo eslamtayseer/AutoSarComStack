@@ -1,5 +1,5 @@
-#include "Can_GeneralTypes.h"
-
+//#include "Can_GeneralTypes.h"
+#include "Can_PBcfg.h"
 Can_CanControllerBaudrateConfig CanControllersBaudRate[] = {
   {
     .CanControllerBaudRate = 500,
