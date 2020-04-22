@@ -9,8 +9,8 @@
 
 const Can_ConfigType* configuration;
 
-tCANMsgObject CAN0RxMessage;
-tCANMsgObject CAN0TxMessage;
+tCANMsgObject CAN0RxMessage [NO_OF_HRH];
+//tCANMsgObject CAN0TxMessage [NO_OF_HTH];
 
 void Hardware_Init(){
 tCANBitClkParms BitTimeParams;
@@ -31,27 +31,76 @@ BitTimeParams.ui32QuantumPrescaler= SysCtlClockGet()/((BitTimeParams.ui32SyncPro
 CANBitTimingSet(Configuration->ControllerConfig->CanIfCtrlCanCtrlRef->CanControllerBaseAddress,&BitTimeParams);
 //CANBitRateSet(configuration->CanConfigSetConfig->CanController->CanControllerBaseAddress, SysCtlClockGet(), configuration->CanConfigSetConfig->CanController->CanControllerDefaultBaudrate->CanControllerBaudRate);
 CANIntEnable(configuration->CanConfigSetConfig->CanController->CanControllerBaseAddress, CAN_INT_MASTER | CAN_INT_STATUS);
-Transmit_Message_Init();
+//Transmit_Message_Init();
 Receive_Message_Init();
 IntEnable(configuration->CanConfigSetConfig->CanController->CanControllerBaseAddress);
 CANEnable(configuration->CanConfigSetConfig->CanController->CanControllerBaseAddress);
 }
-void Transmit_Message_Init(){
-    Can_CanHardwareObject* HOHs = configuration->CanConfigSetConfig->CanHardwareObject;
-    for (uint8 i=0;i<NUM_OF_HOH;i++){
-        if (HOHs[i].CanObjectType==TRANSMIT){
+//void Transmit_Message_Init(){
+//    Can_CanHardwareObject* HOHs = configuration->CanConfigSetConfig->CanHardwareObject;
+//
+//    for (uint8 i=0 , j=0;i<NUM_OF_HOH;i++){
+//        if (HOHs[i].CanObjectType==TRANSMIT){
+//
+//                CAN0TxMessage[j].ui32MsgID = HOHs[i].CanObjectId;
+//                CAN0TxMessage[j].ui32MsgIDMask = 0;
+//                CAN0TxMessage[j].ui32Flags = MSG_OBJ_TX_INT_ENABLE;
+//            j++;
+//        }
+//
+//    }
+//}
+void Receive_Message_Init(){
+        Can_CanHardwareObject* HOHs = configuration->CanConfigSetConfig->CanHardwareObject;
+
+        for (uint8 i=0 , j=0;i<NUM_OF_HOH;i++){
+            if (HOHs[i].CanObjectType==RECEIVE){
+
+                CAN0RxMessage[j].ui32MsgID = HOHs[i].CanHwType.CanId;
+                CAN0RxMessage[j].ui32MsgIDMask = 0;
+                CAN0RxMessage[j].ui32Flags = MSG_OBJ_TX_INT_ENABLE |MSG_OBJ_USE_ID_FILTER;
+                CAN0RxMessage[j].ui32MsgLen=8U;
+                CANMessageSet(HOHs[i].CanControllerRef->CanControllerBaseAddress,HOHs[i].CanObjectId,&CAN0RxMessage[j], MSG_OBJ_TYPE_RX);
+                j++;
+            }
 
         }
-
-    }
-}
-void Receive_Message_Init(){
 
 }
 void Can_Init(const Can_ConfigType* Config){
     configuration = Config;
     Hardware_Init();
 
+}
 
+Can_ReturnType Can_Write(Can_HwHandleType Hth,const Can_PduType* PduInfo){
+    tCANMsgObject  canTxMessage;
+    canTxMessage.ui32MsgID = PduInfo->id;
+//    uint64 *           SduDataPtr;
+//    uint8 *           MetaDataPtr;
+//    PduLengthType   SduLength;
+
+   if(PduInfo->SduLength<1U)
+   {
+       canTxMessage.ui32MsgLen = 1U;
+   }
+
+   else{
+       canTxMessage.ui32MsgLen=PduInfo->length;
+
+       }
+   canTxMessage.pui8MsgData =PduInfo->sdu;
+
+
+   canTxMessage.ui32MsgIDMask = 0U;
+
+
+   canTxMessage.ui32Flags = MSG_OBJ_TX_INT_ENABLE;
+
+
+
+   CANMessageSet(configuration->CanConfigSetConfig->CanHardwareObject[hth].CanControllerRef->CanControllerBaseAddress,configuration->CanConfigSetConfig->CanHardwareObject[hth].CanObjectId, &canTxMessage, MSG_OBJ_TYPE_TX);
+return E_OK;
 
 }
+
