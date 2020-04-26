@@ -12,21 +12,21 @@ Com_PDU *ComPDUs;
 
 Com_StatusType ComStatus = COM_UININT;
 
-int main()
-{
-  Com_Init(&configuration);
-  uint64 SignalValue = 0;
-  uint32 data = 0x0A;
-  Com_SendSignal(0,&data);
-  Com_MainFunctionTx();
-
-  // if (Com_ReceiveSignal(0, &SignalValue) == E_OK)
-  //   printf("Receive Signal 0 %llu\n", SignalValue);
-  // else
-  //   printf("Not Successful\n");
-  Com_DeInit();
-  return 0;
-}
+//int main()
+//{
+//  Com_Init(&configuration);
+//  uint64 SignalValue = 0;
+//  uint32 data = 0x0A;
+//  Com_SendSignal(0,&data);
+//  Com_MainFunctionTx();
+//
+//  // if (Com_ReceiveSignal(0, &SignalValue) == E_OK)
+//  //   printf("Receive Signal 0 %llu\n", SignalValue);
+//  // else
+//  //   printf("Not Successful\n");
+//  Com_DeInit();
+//  return 0;
+//}
 
 void Com_Init(const Com_ConfigType *config)
 {
@@ -37,7 +37,8 @@ void Com_Init(const Com_ConfigType *config)
   const Com_ConfigSignalType *ConfigSignals = ComConfiguration->signals;
 
   /* Initializing each I-PDU */
-  for (int i = 0; i < NUM_OF_PDUS; i++)
+  int i = 0;
+  for (; i < NUM_OF_PDUS; i++)
   {
     ComPDUs[i].ComPDUDataPtr = (void *)malloc(sizeof(uint64));
     memset(ComPDUs[i].ComPDUDataPtr, ConfigPDUs[i].ComTxIPduUnusedAreasDefault, ConfigPDUs[i].ComPDUSize);
@@ -48,7 +49,8 @@ void Com_Init(const Com_ConfigType *config)
   }
 
   /* Initializing each signal in each I-PDU */
-  for (int i = 0; i < NUM_OF_SINGALS; i++)
+  i = 0;
+  for (; i < NUM_OF_SINGALS; i++)
   {
     /* initialization of signals with ComSignalInitValue */
     Com_SetBits(ComPDUs[ConfigSignals[i].ComPDUId].ComPDUDataPtr, ConfigSignals[i].ComSignalInitValue,
@@ -143,7 +145,8 @@ Std_ReturnType Com_TriggeredIPDUSend(PduIdType PduId)
   {
     printf("Pdur received %u \n",*(uint64 *)ComPDUs[PduId].ComPDUDataPtr);
     /* Clearing signals update-bits */
-    for (int i = 0; i < NUM_OF_SINGALS; i++)
+    int i = 0;
+    for (; i < NUM_OF_SINGALS; i++)
     {
       if (ConfigSignals[i].ComPDUId == PduId)
       {
@@ -164,7 +167,8 @@ void Com_MainFunctionTx(void)
     return;
   }
 
-  for (int i = 0; i < NUM_OF_PDUS; i++)
+  int i = 0;
+  for (; i < NUM_OF_PDUS; i++)
   {
     switch (ComPDUs[i].ComTxModeMode)
     {
@@ -206,7 +210,8 @@ void Com_TxConfirmation(PduIdType PduId)
 void Com_DeInit(void)
 {
   /* This function should free all of the allocated memory used by the COM Module */
-  for (int i = 0; i < NUM_OF_PDUS; i++)
+  int  i = 0;
+  for (; i < NUM_OF_PDUS; i++)
   {
     free(ComPDUs[i].ComPDUDataPtr);
   }

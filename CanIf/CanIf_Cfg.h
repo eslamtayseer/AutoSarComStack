@@ -3,7 +3,7 @@
 
 #include "../include/Std_Types.h"
 #include "CanIf_Types.h"
-#include "../Can_Calipso/Can_GeneralTypes.h"
+#include "../Can_Tiva/Can_GeneralTypes.h"
 
 typedef struct
 {

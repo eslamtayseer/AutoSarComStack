@@ -4,7 +4,7 @@
 #include "../include/ComStack_Types.h"
 #include "CanIf_Types.h"
 #include "CanIf_Cfg.h"
-#include "../Can_Calipso/Can_GeneralTypes.h"
+#include "../Can_Tiva/Can_GeneralTypes.h"
 
 void                CanIf_Init               (CanIf_ConfigType   *ConfigPtr);
 void                CanIf_DeInit             (void);

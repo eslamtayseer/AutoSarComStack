@@ -33,8 +33,8 @@ boolean FindCanPduBySduId (PduIdType Id, CanIfTxPduCfg *CanIfPdu)
 {
   CanIfTxPduCfg *CanIfConfigTxPdus = Configuration->InitConfig->CanIfTxPdusCfgs;
   uint8 CanIfConfigTxPdusNumber = Configuration->InitConfig->CanIfMaxTxPduCfg;
-  
-  for (int i = 0; i < CanIfConfigTxPdusNumber; i++)
+  int i = 0;
+  for (i = 0; i < CanIfConfigTxPdusNumber; i++)
   {
     if (Id == CanIfConfigTxPdus[i].CanIfTxPduId)
     {

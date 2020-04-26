@@ -9,6 +9,11 @@ typedef uint8 Can_HwHandleType;
 
 typedef enum
 {
+  CAN_BUSY = 0x02
+} Can_ReturnType;
+
+typedef enum
+{
   EXTENDED,
   CANID_MIXED,
   STANDARD
