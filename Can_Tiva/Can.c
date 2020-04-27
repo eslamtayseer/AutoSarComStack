@@ -40,7 +40,8 @@ CANBitTimingSet(CanTivaConfig->CanConfigSetConfig->CanController[0].CanControlle
 CANIntEnable(CanTivaConfig->CanConfigSetConfig->CanController->CanControllerBaseAddress, CAN_INT_MASTER | CAN_INT_STATUS);
 //Transmit_Message_Init();
 Receive_Message_Init();
-IntEnable(CanTivaConfig->CanConfigSetConfig->CanController->CanControllerBaseAddress);
+//IntEnable(CanTivaConfig->CanConfigSetConfig->CanController->CanControllerBaseAddress);
+IntEnable (INT_CAN0);
 CANEnable(CanTivaConfig->CanConfigSetConfig->CanController->CanControllerBaseAddress);
 }
 //void Transmit_Message_Init(){

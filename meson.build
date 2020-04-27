@@ -1,6 +1,7 @@
 project ('autosar', 'c')
 
-resources = ['Com/Com.c',
+resources = ['main.c',
+             'Com/Com.c',
              'Com/Com_Lcfg.c',
              'Com/Com_Pbcfg.c',
              'PduR/PduR.c',

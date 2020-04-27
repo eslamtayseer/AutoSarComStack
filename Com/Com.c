@@ -8,7 +8,7 @@
 
 const Com_ConfigType *ComConfiguration;
 
-Com_PDU *ComPDUs;
+Com_PDU ComPDUs[NUM_OF_PDUS];
 
 Com_StatusType ComStatus = COM_UININT;
 
@@ -31,7 +31,7 @@ Com_StatusType ComStatus = COM_UININT;
 void Com_Init(const Com_ConfigType *config)
 {
   ComConfiguration = config;
-  ComPDUs = (Com_PDU *)malloc(NUM_OF_PDUS * sizeof(Com_PDU));
+//  ComPDUs = (Com_PDU *)malloc(NUM_OF_PDUS * sizeof(Com_PDU));
 
   const Com_ConfigPDUType *ConfigPDUs = ComConfiguration->pdus;
   const Com_ConfigSignalType *ConfigSignals = ComConfiguration->signals;
@@ -40,7 +40,7 @@ void Com_Init(const Com_ConfigType *config)
   int i = 0;
   for (; i < NUM_OF_PDUS; i++)
   {
-    ComPDUs[i].ComPDUDataPtr = (void *)malloc(sizeof(uint64));
+    ComPDUs[i].ComPDUDataPtr = (uint64 *)malloc(sizeof(uint64));
     memset(ComPDUs[i].ComPDUDataPtr, ConfigPDUs[i].ComTxIPduUnusedAreasDefault, ConfigPDUs[i].ComPDUSize);
     ComPDUs[i].ComPDUDirection = ConfigPDUs[i].ComPDUDirection;
     ComPDUs[i].ComPDUId = ConfigPDUs[i].ComPDUId;
@@ -81,7 +81,7 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId, const void *SignalDataPtr)
       break;
     case TRIGGERED:
       if (singalPDU.ComTxModeMode == MIXED || singalPDU.ComTxModeMode == DIRECT)
-        singalPDU.ComTxModeNumberOfRepetitions++;
+          ComPDUs[ConfigSignals[SignalId].ComPDUId].ComTxModeNumberOfRepetitions++;
       break;
     case TRIGGERED_ON_CHANGE_WITHOUT_REPETITION:
       // if(singalPDU.ComTxModeMode== MIXED||singalPDU.ComTxModeMode== DIRECT) singalPDU.ComTxModeNumberOfRepetitions=1;
@@ -91,7 +91,7 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId, const void *SignalDataPtr)
       break;
     case TRIGGERED_WITHOUT_REPETITION:
       if (singalPDU.ComTxModeMode == MIXED || singalPDU.ComTxModeMode == DIRECT)
-        singalPDU.ComTxModeNumberOfRepetitions = 1;
+          ComPDUs[ConfigSignals[SignalId].ComPDUId].ComTxModeNumberOfRepetitions = 1;
       break;
     }
     return E_OK;
@@ -143,7 +143,7 @@ Std_ReturnType Com_TriggeredIPDUSend(PduIdType PduId)
       .SduLength = 8};
   if (PduR_ComTransmit(PduId, &info) == E_OK)
   {
-    printf("Pdur received %u \n",*(uint64 *)ComPDUs[PduId].ComPDUDataPtr);
+//    printf("Pdur received %u \n",*(uint64 *)ComPDUs[PduId].ComPDUDataPtr);
     /* Clearing signals update-bits */
     int i = 0;
     for (; i < NUM_OF_SINGALS; i++)
@@ -192,6 +192,7 @@ void Com_MainFunctionTx(void)
       break;
     case MIXED:
       // Not yet supoorted
+        ComPDUs[i].ComTxModeNumberOfRepetitions--;
       break;
     }
   }

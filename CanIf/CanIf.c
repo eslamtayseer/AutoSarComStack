@@ -21,7 +21,7 @@ Std_ReturnType CanIf_Transmit (PduIdType CanIfTxSduId, const PduInfoType *CanIfT
       canPdu.length =(*CanIfTxInfoPtr).SduLength;
       canPdu.sdu = (*CanIfTxInfoPtr).SduDataPtr;
       canPdu.swPduHandle = CanIfTxPdu.CanIfTxPduId ;
-   return E_OK; // can_write((*CanIfTxPdu).CanIfTxPduBufferRef->CanIfBufferHthRef,&canPdu);
+   return Can_Write(CanIfTxPdu.CanIfTxPduBufferRef->CanIfBufferHthRef[0].CanIfHthIdSymRef[0].CanHwType.Hoh,&canPdu);
 
   }
   else{

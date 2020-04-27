@@ -4,11 +4,51 @@
 
 // };
 
+CanIf_CanIfCtrlCfg CanInterfaceControllersCfgs[] =
+{
+  {
+    .CanIfCtrlCanCtrlRef = &CanControllers[0],
+    .CanIfCtrlId = 0
+  }
+};
+
+CanIf_CanIfHthCfg CanInterfaceHthCfgs[] =
+{
+ {
+  .CanIfHrhCanCtrlIdRef = &CanInterfaceControllersCfgs[0],
+  .CanIfHthIdSymRef = &CanHardwareObjects[1]
+ }
+};
+
+CanIf_CanIfHrhCfg CanInterfaceHrhCfgs[] =
+{
+ {
+  .CanIfHrhCanCtrlIdRef = &CanInterfaceControllersCfgs[0],
+  .CanIfHthIdSymRef = &CanHardwareObjects[0]
+ }
+};
+
+CanIf_CanIfInitHohCfg CanInterfaceHohCfgs[] =
+{
+ {
+  .CanIfHthCfg = CanInterfaceHthCfgs,
+  .CanIfHrhCfg = CanInterfaceHrhCfgs
+ }
+};
+
+CanIfBufferCfg CanIfBuffer[] =
+{
+ {
+  .CanIfBufferHthRef = CanInterfaceHthCfgs,
+  .CanIfBufferSize = 0
+ }
+};
+
 CanIfRxPduCfg  RxPduCfg[] = { {
  .CanIfRxPduCanId = 0,
  .CanIfRxPduCanIdType = STANDARD_CAN,
  .CanIfRxPduDlc = TRUE,
- // CanIfHrhCfg               *CanIfRxPduHrhIdRef;
+ .CanIfRxPduHrhIdRef = &CanInterfaceHrhCfgs[0],
  .CanIfRxPduId = 0,
  .CanIfRxPduReadNotifyStatus = FALSE,
  .CanIfRxPduReadData = FALSE,
@@ -16,7 +56,8 @@ CanIfRxPduCfg  RxPduCfg[] = { {
  }
 };
  CanIfTxPduCfg  TxPduCfg[]={
-	 {
+{
+  .CanIfTxPduBufferRef = &CanIfBuffer[0],
   .CanIfTxPduCanId = 0,
   .CanIfTxPduCanIdType = STANDARD_CAN,
   .CanIfTxPduId = 0,
@@ -31,12 +72,13 @@ CanIfRxPduCfg  RxPduCfg[] = { {
    .CanIfMaxRxPduCfg = 1,
    .CanIfMaxTxPduCfg = 1,
 
-   // CanIfBufferCfg            *CanIfBuffersCfgs;
-   // CanIfInitHohCfg           *CanIfDrvCfgs;
-   .CanIfRxPdusCfgs = &RxPduCfg[0],
-   .CanIfTxPdusCfgs = &TxPduCfg[0]
+   .CanIfBuffersCfgs = CanIfBuffer,
+   .CanIfInitHohCfgs = CanInterfaceHohCfgs,
+   .CanIfRxPdusCfgs = RxPduCfg,
+   .CanIfTxPdusCfgs = TxPduCfg
    }
 };
 const CanIf_ConfigType CanIfConfiguration ={
-    .InitConfig =&initCfg[0]
+    .InitConfig =&initCfg[0],
+    .ControllerConfig = CanInterfaceControllersCfgs
 };
