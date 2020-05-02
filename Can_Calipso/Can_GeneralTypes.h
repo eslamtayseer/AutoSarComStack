@@ -9,9 +9,14 @@ typedef uint8 Can_HwHandleType;
 
 typedef enum
 {
-  EXTENDED,
-  CANID_MIXED,
-  STANDARD
+  CAN_BUSY = 0x02
+} Can_ReturnType;
+
+typedef enum
+{
+  EXTENDED=1,
+  CANID_MIXED=2,
+  STANDARD=0
 } Can_CanIdType;
 
 typedef enum

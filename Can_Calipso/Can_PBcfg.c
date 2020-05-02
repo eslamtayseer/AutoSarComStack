@@ -1,5 +1,5 @@
-#include "Can_GeneralTypes.h"
-
+//#include "Can_GeneralTypes.h"
+#include "Can_PBcfg.h"
 Can_CanControllerBaudrateConfig CanControllersBaudRate[] = {
   {
     .CanControllerBaudRate = 500,
@@ -14,7 +14,7 @@ Can_CanControllerBaudrateConfig CanControllersBaudRate[] = {
 Can_CanController CanControllers[] = {
   {
     .CanControllerActivation = TRUE,
-    .CanControllerBaseAddress = 0xFFEC0000,
+    .CanControllerBaseAddress = 0xFBEC0000,
     .CanControllerId = 0,
     .CanRxProcessing = INTERRUPT,
     .CanTxProcessing = INTERRUPT,
