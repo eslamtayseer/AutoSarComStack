@@ -77,7 +77,7 @@ extern void xcptn_xmpl(void);
 static void HW_Init(void);
 static void Sysclk_Init(void);
 static void GPIO_Init(void);
-static void FlexCAN_0_Init();
+// static void FlexCAN_0_Init();
 static void FlexCAN_1_Init();
 static void Configure_RX_MessageBuffer(void);
 static void Transmit_Message();
@@ -377,22 +377,22 @@ void CAN_1_Receive_InterruptHandler(void)
 
 
 __attribute__ ((section(".text")))
-int main(void)
-{
-	int counter = 0;
-	INTC.PSR[580].R = 0x8001; //set interrupt core and priority
-	
-	HW_Init();
-	// FlexCAN_0_Init();
-	FlexCAN_1_Init();
-	Configure_RX_MessageBuffer();
-	Transmit_Message();
-
-
-
-	for(;;) {	   
-	   	counter++;
-	}
-	
-	return 0;
-}
+// int main(void)
+// {
+// 	int counter = 0;
+// 	INTC.PSR[580].R = 0x8001; //set interrupt core and priority
+// 	
+// 	HW_Init();
+// 	FlexCAN_0_Init();
+// 	FlexCAN_1_Init();
+// 	Configure_RX_MessageBuffer();
+// 	Transmit_Message();
+// 
+// 
+// 
+// 	for(;;) {	   
+// 	   	counter++;
+// 	}
+// 	
+// 	return 0;
+// }
