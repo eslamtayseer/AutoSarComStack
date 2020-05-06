@@ -23,4 +23,5 @@ void           Com_SetBits              (void                 *DataPtr,
                                          uint8                 DataSize);
 void           Com_TxConfirmation       (PduIdType         PduId);
 void           Com_DeInit               (void);
+void           Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr);
 #endif

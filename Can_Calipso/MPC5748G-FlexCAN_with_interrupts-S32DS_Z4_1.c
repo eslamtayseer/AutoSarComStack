@@ -372,6 +372,8 @@ void CAN_1_Receive_InterruptHandler(void)
 	/* release the internal lock for all Rx MBs
 	 * by reading the TIMER */
 	temp = CAN_1.TIMER.R;
+	
+	//Rx Indication 
 
 }
 

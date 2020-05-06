@@ -137,6 +137,7 @@ CAN0IntHandler(void)
           if (HOHs[i].CanObjectType == RECEIVE)
           {
              CANMessageGet (CAN0_BASE, HOHs[i].CanObjectId, &CAN0RxMessage[HOHs[i].CanObjectId], true);
+             //Rx Indication
           }
           else
           {

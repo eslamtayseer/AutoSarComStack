@@ -45,3 +45,7 @@ boolean FindCanPduBySduId (PduIdType Id, CanIfTxPduCfg *CanIfPdu)
   
   return FALSE;
 }
+void CanIf_RxIndication(const Can_HwType* Mailbox,const PduInfoType* PduInfoPtr){
+  
+}
+

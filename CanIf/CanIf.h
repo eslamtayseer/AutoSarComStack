@@ -15,5 +15,7 @@ Std_ReturnType      CanIf_ReadRxPduData      (PduIdType           CanIfRxSduId,
 void                CanIf_TxConfirmation     (PduIdType           CanTxPduId);
 void                CanIf_RxIndication       (const Can_HwType   *Mailbox,
                                               const PduInfoType  *PduInfoPtr);
+void CanIf_RxIndication(const Can_HwType* Mailbox,const PduInfoType* PduInfoPtr);
+
 
 #endif

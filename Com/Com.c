@@ -220,3 +220,7 @@ void Com_DeInit(void)
   free((void *)ComPDUs);
   ComStatus = COM_UININT;
 }
+
+void Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr){
+
+}
