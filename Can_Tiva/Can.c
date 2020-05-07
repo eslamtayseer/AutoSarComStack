@@ -1,5 +1,5 @@
 #include "Can.h"
-#include "CanIf.h"
+#include "../CanIf/CanIf.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <stddef.h>
@@ -14,6 +14,7 @@
 #include "driverlib/interrupt.h"
 #include "driverlib/can.h"
 
+void Receive_Message_Init();
 
 const Can_ConfigType* CanTivaConfig;
 
@@ -160,7 +161,7 @@ CAN0IntHandler(void)
 	PduInfoType CanRxPdu = {
      	.SduDataPtr = CAN0RxMessage[source].pui8MsgData,
      	.MetaDataPtr = NULL,
-     	.SduLength = ui32MsgLen
+     	.SduLength = CAN0RxMessage[source].ui32MsgLen
      };
      CanIf_RxIndication(&(HOHs[source].CanHwType), &CanRxPdu);
   }

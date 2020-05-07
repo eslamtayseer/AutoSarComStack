@@ -1,4 +1,6 @@
 #include "CanIf.h"
+#include "../Can_Tiva/Can.h"
+#include "../PduR/PduR.h"
 
 boolean FindCanPduBySduId (PduIdType Id, CanIfTxPduCfg *CanIfPdu); /*Private function shouldn't be part of the exposed API*/
 
@@ -47,13 +49,13 @@ boolean FindCanPduBySduId (PduIdType Id, CanIfTxPduCfg *CanIfPdu)
 }
 void CanIf_RxIndication(const Can_HwType* Mailbox,const PduInfoType* PduInfoPtr)
 {
-  CanIfTxPduCfg *CanIfConfigRxPdus = Configuration->InitConfig->CanIfRxPdusCfgs;
+  CanIfRxPduCfg *CanIfConfigRxPdus = Configuration->InitConfig->CanIfRxPdusCfgs;
   uint8 CanIfConfigRxPdusNumber = Configuration->InitConfig->CanIfMaxRxPduCfg;
   uint8 CanId = Mailbox->CanId;
   int i = 0;
   for(i = 0; i < CanIfConfigRxPdusNumber; i++)
   {
-  	if(CanId == CanIfConfigRxPdus[i].CanIfRxPduCanId)
+  	if(CanId == CanIfConfigRxPdus[i].CanIfRxPduId)
   	{
   	  PduR_CanIfRxIndication(CanIfConfigRxPdus[i].CanIfRxPduId, PduInfoPtr);
   	}
