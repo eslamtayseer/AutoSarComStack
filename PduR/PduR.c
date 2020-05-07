@@ -7,5 +7,5 @@ Std_ReturnType PduR_ComTransmit(PduIdType id,const PduInfoType* info){
 }
 
 void PduR_CanIfRxIndication( PduIdType RxPduId,const PduInfoType* PduInfoPtr){
-    
+    Com_RxIndication(RxPduId, PduInfoPtr);
 }

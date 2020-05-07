@@ -1,4 +1,5 @@
 #include "Can.h"
+#include "CanIf.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <stddef.h>
@@ -127,7 +128,7 @@ CAN0IntHandler(void)
   }
   else
   {
-    int i = 0;
+    /*int i = 0;
     for (; i < NO_OF_HOH; i++)
     {
       if (ui32Status == HOHs[i].CanObjectId)
@@ -138,12 +139,29 @@ CAN0IntHandler(void)
           {
              CANMessageGet (CAN0_BASE, HOHs[i].CanObjectId, &CAN0RxMessage[HOHs[i].CanObjectId], true);
              //Rx Indication
+             PduInfoType CanRxPdu = {
+             	.SduDataPtr = CAN0RxMessage[HOHs[i].CanObjectId].pui8MsgData,
+             	.MetaDataPtr = NULL,
+             	.SduLength = ui32MsgLen
+             };
+             CanIf_RxIndication(&HOHs[i].CanHwType, &CanRxPdu);
           }
           else
           {
 
           }
       }
-    }
+    }*/
+    uint32_t source = ui32Status & 0xffffffff;
+    if(CanConfiguration.CanConfigSetConfig->CanHardwareObject[source].CanObjectType != RECEIVE)
+		return;
+		
+	CANMessageGet (CAN0_BASE, source, &CAN0RxMessage[source], true);
+	PduInfoType CanRxPdu = {
+     	.SduDataPtr = CAN0RxMessage[source].pui8MsgData,
+     	.MetaDataPtr = NULL,
+     	.SduLength = ui32MsgLen
+     };
+     CanIf_RxIndication(&(HOHs[source].CanHwType), &CanRxPdu);
   }
 }

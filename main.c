@@ -19,6 +19,11 @@ int main(void)
     while (1)
     {
         while ((NVIC_ST_CTRL_R & NVIC_ST_CTRL_COUNT) == 0);
+        uint64 RxSignal0;
+        if(Com_ReceiveSignal(0, &RxSignal0) == E_OK)
+        {
+        	
+        }
         uint8 Signal_Data = 5;
         Com_SendSignal(0, &Signal_Data);
         Com_MainFunctionTx();

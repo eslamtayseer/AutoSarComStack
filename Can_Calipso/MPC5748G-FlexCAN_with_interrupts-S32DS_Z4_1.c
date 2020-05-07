@@ -58,6 +58,7 @@ Version  Date         Author  			Description of Changes
 
 #include "derivative.h" /* include peripheral declarations */
 #include "Can_Calipso/Can_PBcfg.h"
+#include "Can_Calipso/Can.h"
 
 
 /*******************************************************************************
@@ -352,7 +353,9 @@ void CAN_1_Receive_InterruptHandler(void)
 	uint32_t source = CAN_1.IFLAG1.R & 0xffffffff;
 	/*Clear interrupt flag*/
 	CAN_1.IFLAG1.R = source;
-
+	
+	if(CanConfiguration.CanConfigSetConfig->CanHardwareObject[source].CanObjectType != RECEIVE)
+		return;
 
 	uint32_t temp = 0;
 
@@ -373,8 +376,14 @@ void CAN_1_Receive_InterruptHandler(void)
 	 * by reading the TIMER */
 	temp = CAN_1.TIMER.R;
 	
-	//Rx Indication 
-
+	//Rx Indication
+	uint64 Data = (ReceiveBuffer[source][1] << 32) || ReceiveBuffer[source][0];
+	PduInfoType CanRxPdu = {
+     	.SduDataPtr = &Data,
+     	.MetaDataPtr = NULL,
+     	.SduLength = CAN_1.MB[source].CS.B.DLC
+     };
+	CanIf_RxIndication(&(CanConfiguration.CanConfigSetConfig->CanHardwareObject[source].CanHwType), &CanRxPdu);
 }
 
 

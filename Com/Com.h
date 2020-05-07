@@ -18,7 +18,7 @@ void           Com_MainFunctionTx       (void);
 Std_ReturnType Com_TriggeredIPDUSend    (PduIdType         PduId);
 boolean        CheckSignalId            (Com_SignalIdType      id);
 void           Com_SetBits              (void                 *DataPtr,
-                                         uint32                Data,
+                                         uint64                Data,
                                          uint8                DataStartPosition,
                                          uint8                 DataSize);
 void           Com_TxConfirmation       (PduIdType         PduId);

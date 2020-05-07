@@ -112,10 +112,18 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void *SignalDataPtr)
   uint8 PduId = ConfigSignals[SignalId].ComPDUId;
   if (ComPDUs[PduId].ComPDUDirection != RECIEVE)
     return E_NOT_OK;
-
+  
+  uint8 UpdateBitPosition = ConfigSignal[SignalId].ComUpdateBitPosition;
+  
+  if (ComPDUs[PduId].ComPDUDataPtr & (0x01 << UpdateBitPosition) != 0x01)
+    return E_NOT_OK;
+  
   uint64 mask = (uint64)(pow(2, ConfigSignals[SignalId].ComBitSize) - 1);
   uint64 value = *(uint64 *)ComPDUs[PduId].ComPDUDataPtr & mask;
+  
   *(uint64 *)SignalDataPtr = value;
+  
+  Com_SetBits(ComPDUs[PduId], 0, ConfigSignals[SignalId].ComUpdateBitPosition, 1);
 
   return E_OK;
 }
@@ -198,7 +206,7 @@ void Com_MainFunctionTx(void)
   }
 }
 
-void Com_SetBits(void *DataPtr, uint32 Data, uint8 DataStartPosition, uint8 DataSize)
+void Com_SetBits(void *DataPtr, uint64 Data, uint8 DataStartPosition, uint8 DataSize)
 {
   uint64 mask = (uint64)(pow(2, DataSize) - 1);
   *(uint64 *)DataPtr = (*(uint64 *)DataPtr & ~(mask << DataStartPosition)) | ((Data << DataStartPosition) & (mask << DataStartPosition));
@@ -222,5 +230,6 @@ void Com_DeInit(void)
 }
 
 void Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr){
-
+	Com_SetBits(ComPDUs[RxPduId].ComPDUDataPtr, *(PduInfoPtr->SduDataPtr), 0, 64);
 }
+
