@@ -7,7 +7,9 @@
 #include "../include/ComStack_Types.h"
 
 #define NUM_OF_SINGALS 2
-#define NUM_OF_PDUS 1
+#define NUM_OF_TX_PDUS 1
+#define NUM_OF_RX_PDUS 1
+#define NUM_OF_PDUS NUM_OF_TX_PDUS + NUM_OF_RX_PDUS
 
 typedef struct
 {
@@ -22,7 +24,7 @@ typedef struct
 
 typedef struct
 {
-  PduIdType ComPDUId;
+  const PduIdType ComPDUId;
   Com_ComTxModeMode ComTxModeMode;
   Com_PduDirectionType ComPDUDirection;
   uint8 ComTxIPduUnusedAreasDefault;

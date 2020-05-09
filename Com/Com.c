@@ -5,6 +5,7 @@
 
 #include "Com.h"
 #include "../PduR/PduR.h"
+#include "../PduR/PduR_Pbcfg.h"
 
 const Com_ConfigType *ComConfiguration;
 
@@ -149,7 +150,7 @@ Std_ReturnType Com_TriggeredIPDUSend(PduIdType PduId)
       .SduDataPtr = ComPDUs[PduId].ComPDUDataPtr,
       .MetaDataPtr = NULL,
       .SduLength = 8};
-  if (PduR_ComTransmit(PduId, &info) == E_OK)
+  if (PduR_ComTransmit(ComTxPduRMap[PduId], &info) == E_OK)
   {
 //    printf("Pdur received %u \n",*(uint64 *)ComPDUs[PduId].ComPDUDataPtr);
     /* Clearing signals update-bits */
@@ -230,6 +231,8 @@ void Com_DeInit(void)
 }
 
 void Com_RxIndication(PduIdType RxPduId,const PduInfoType* PduInfoPtr){
+  if(RxPduId >NUM_OF_PDUS ) return;
+  if(ComPDUs[RxPduId].ComPDUDirection !=RECIEVE) return;
 	Com_SetBits(ComPDUs[RxPduId].ComPDUDataPtr, *(PduInfoPtr->SduDataPtr), 0, 64);
 }
 

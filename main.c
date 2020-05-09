@@ -14,6 +14,7 @@ int main(void)
     Com_Init (&configuration);
     CanIf_Init(&CanIfConfiguration);
     Can_Init (&CanConfiguration);
+    PduR_Init(&PduRConfig);
     Timer_Init(1000);
 
     while (1)

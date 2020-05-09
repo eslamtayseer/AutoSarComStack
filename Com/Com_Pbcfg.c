@@ -31,5 +31,14 @@ const Com_ConfigPDUType pdus[] =
     .ComTxIPduUnusedAreasDefault = 255,
     .ComPDUSize = 8,
     .ComTxModeNumberOfRepetitions= 0
+  },
+    {
+    .ComPDUId = 1,
+    .ComTxModeMode = DIRECT,
+    .ComPDUDirection = RECIEVE,
+    .ComTxIPduUnusedAreasDefault = 255,
+    .ComPDUSize = 8,
+    .ComTxModeNumberOfRepetitions= 0
   }
+
 };
