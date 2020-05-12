@@ -1,5 +1,6 @@
 #include "../include/Std_Types.h"
 #include"../include/ComStack_Types.h"
+#include "PduR_Pbcfg.h"
 
 void PduR_Init(
  const PduRRoutingTable* ConfigPtr

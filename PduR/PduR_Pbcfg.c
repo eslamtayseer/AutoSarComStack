@@ -26,7 +26,7 @@ const PduRRoutingPath routingPathes []={
     }
 };
 
-const PduRRoutingTable tableConfig ={
+const PduRRoutingTable PduRConfig ={
     .pathes =&routingPathes[0]
 } ;
 // const uint8 ComTxPduRMap[NUM_OF_PDUS];

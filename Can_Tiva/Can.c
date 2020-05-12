@@ -39,11 +39,12 @@ BitTimeParams.ui32QuantumPrescaler= SysCtlClockGet()/((BitTimeParams.ui32SyncPro
                      *(CanTivaConfig->CanConfigSetConfig->CanController->CanControllerDefaultBaudrate->CanControllerBaudRate));
 CANBitTimingSet(CanTivaConfig->CanConfigSetConfig->CanController[0].CanControllerBaseAddress,&BitTimeParams);
 //CANBitRateSet(CanTivaConfig->CanConfigSetConfig->CanController->CanControllerBaseAddress, SysCtlClockGet(), CanTivaConfig->CanConfigSetConfig->CanController->CanControllerDefaultBaudrate->CanControllerBaudRate);
-CANIntEnable(CanTivaConfig->CanConfigSetConfig->CanController->CanControllerBaseAddress, CAN_INT_MASTER | CAN_INT_STATUS);
 //Transmit_Message_Init();
 Receive_Message_Init();
 //IntEnable(CanTivaConfig->CanConfigSetConfig->CanController->CanControllerBaseAddress);
 IntEnable (INT_CAN0);
+CANIntEnable(CanTivaConfig->CanConfigSetConfig->CanController->CanControllerBaseAddress, CAN_INT_MASTER | CAN_INT_STATUS);
+
 CANEnable(CanTivaConfig->CanConfigSetConfig->CanController->CanControllerBaseAddress);
 }
 //void Transmit_Message_Init(){
@@ -123,7 +124,7 @@ CAN0IntHandler(void)
 
   ui32Status = CANIntStatus(CAN0_BASE, CAN_INT_STS_CAUSE);
 
-  if(ui32Status == CAN_INT_INTID_STATUS)
+  if(ui32Status < 0x0001 || ui32Status > 0x0020)
   {
     ui32Status = CANStatusGet(CAN0_BASE, CAN_STS_CONTROL);
   }
@@ -154,15 +155,15 @@ CAN0IntHandler(void)
       }
     }*/
     uint32_t source = ui32Status & 0xffffffff;
-    if(CanConfiguration.CanConfigSetConfig->CanHardwareObject[source].CanObjectType != RECEIVE)
+    if(CanConfiguration.CanConfigSetConfig->CanHardwareObject[source - 1].CanObjectType != RECEIVE)
 		return;
 		
-	CANMessageGet (CAN0_BASE, source, &CAN0RxMessage[source], true);
+	CANMessageGet (CAN0_BASE, source - 1, &CAN0RxMessage[source - 1], true);
 	PduInfoType CanRxPdu = {
-     	.SduDataPtr = CAN0RxMessage[source].pui8MsgData,
+     	.SduDataPtr = CAN0RxMessage[source - 1].pui8MsgData,
      	.MetaDataPtr = NULL,
-     	.SduLength = CAN0RxMessage[source].ui32MsgLen
+     	.SduLength = CAN0RxMessage[source - 1].ui32MsgLen
      };
-     CanIf_RxIndication(&(HOHs[source].CanHwType), &CanRxPdu);
+     CanIf_RxIndication(&(HOHs[source - 1].CanHwType), &CanRxPdu);
   }
 }

@@ -4,6 +4,8 @@
 #include "CanIf/CanIf.h"
 #include "Can_Tiva/Can.h"
 #include "Timer_Tiva/Timer_Tiva.h"
+#include "driverlib/interrupt.h"
+#include "inc/hw_ints.h"
 
 /**
  * main.c
@@ -28,6 +30,8 @@ int main(void)
         uint8 Signal_Data = 5;
         Com_SendSignal(0, &Signal_Data);
         Com_MainFunctionTx();
+        IntTrigger(INT_CAN0_TM4C123);
+//        CAN0_INT_R |= 0x01;
     }
 	return 0;
 }
