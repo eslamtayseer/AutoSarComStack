@@ -57,8 +57,12 @@ Version  Date         Author  			Description of Changes
 *******************************************************************************/
 
 #include "derivative.h" /* include peripheral declarations */
-#include "Can_Calipso/Can_PBcfg.h"
-#include "Can_Calipso/Can.h"
+#include "Can_PBcfg.h"
+#include "Can.h"
+#include "Can_API.h"
+#include "../Com/Com.h"
+#include "../PduR/PduR.h"
+#include "../CanIf/CanIf.h"
 
 
 /*******************************************************************************
@@ -75,13 +79,13 @@ vuint32_t ReceiveBuffer[NO_OF_HRH][2];
 * Function prototypes
 *******************************************************************************/
 extern void xcptn_xmpl(void);
-static void HW_Init(void);
-static void Sysclk_Init(void);
-static void GPIO_Init(void);
-// static void FlexCAN_0_Init();
-static void FlexCAN_1_Init();
-static void Configure_RX_MessageBuffer(void);
-static void Transmit_Message();
+//extern void hw_init(void);
+//static void Sysclk_Init(void);
+//static void GPIO_Init(void);
+////static void FlexCAN_0_Init();
+//static void FlexCAN_1_Init();
+//static void Configure_RX_MessageBuffer(void);
+//static void Transmit_Message();
 
 
 /*******************************************************************************
@@ -99,7 +103,7 @@ Returns       :
 Notes         : initialization of the hw for the purposes of this example
 Issues        :
 *******************************************************************************/
-static void HW_Init(void)
+ void hw_init(void)
 {
 	xcptn_xmpl ();              /* Configure and Enable Interrupts */
 	Sysclk_Init();
@@ -118,7 +122,7 @@ Notes         : Clock settings - configure 160MHz system clock using
                 40MHz crystal
 Issues        : NONE
 *******************************************************************************/
-static void Sysclk_Init(void)
+ void Sysclk_Init(void)
 {
     /* enable all modes, enable all peripherals */
     MC_ME.ME.R        = 0x000005FF;
@@ -158,7 +162,7 @@ Returns       : NONE
 Notes         : SIUL2 initialization (ports)
 Issues        : NONE
 ******************************************************************************/
-static void GPIO_Init(void)
+ void GPIO_Init(void)
 {
 	 SIUL2.MSCR[16].B.SSS = 1;    /* Pad PB0: Source signal is CAN0_TX */
 	 SIUL2.MSCR[16].B.OBE = 1;    /* Pad PB0: Output Buffer Enable */
@@ -240,7 +244,7 @@ Returns       : NONE
 Notes         : FlexCAN_1 basic initialization
 Issues        : NONE
 ******************************************************************************/
-static void FlexCAN_1_Init()
+ void FlexCAN_1_Init()
 {
 	int i = 0;
 
@@ -298,7 +302,7 @@ Notes         : Configure FlexCAN_1 MB0. Message with any standard ID could be
   	  	  	  	received, because of RXIMR settings (all bits are do not care)
 Issues        : NONE
 ******************************************************************************/
-static void Configure_RX_MessageBuffer(void)
+ void Configure_RX_MessageBuffer(void)
 {
 	int i =0;
 	for(i=0;i<NO_OF_HRH;i++){
@@ -323,7 +327,7 @@ Notes         : Configure FlexCAN_0 MB0 for message transmission with STD ID = 0
 				Message length is 8 bytes
 Issues        : NONE
 ******************************************************************************/
-static void Transmit_Message()
+ void Transmit_Message()
 {
 	CAN_0.MB[0].CS.B.CODE = 0x8;          //MB TX inactive
 	CAN_0.MB[0].CS.B.IDE = 0;			  //send STD ID
@@ -353,9 +357,7 @@ void CAN_1_Receive_InterruptHandler(void)
 	uint32_t source = CAN_1.IFLAG1.R & 0xffffffff;
 	/*Clear interrupt flag*/
 	CAN_1.IFLAG1.R = source;
-	
-	if(CanConfiguration.CanConfigSetConfig->CanHardwareObject[source].CanObjectType != RECEIVE)
-		return;
+
 
 	uint32_t temp = 0;
 
@@ -375,35 +377,32 @@ void CAN_1_Receive_InterruptHandler(void)
 	/* release the internal lock for all Rx MBs
 	 * by reading the TIMER */
 	temp = CAN_1.TIMER.R;
-	
-	//Rx Indication
-	uint64 Data = (ReceiveBuffer[source][1] << 32) || ReceiveBuffer[source][0];
-	PduInfoType CanRxPdu = {
-     	.SduDataPtr = &Data,
-     	.MetaDataPtr = NULL,
-     	.SduLength = CAN_1.MB[source].CS.B.DLC
-     };
-	CanIf_RxIndication(&(CanConfiguration.CanConfigSetConfig->CanHardwareObject[source].CanHwType), &CanRxPdu);
+
 }
 
 
 __attribute__ ((section(".text")))
-// int main(void)
-// {
-// 	int counter = 0;
-// 	INTC.PSR[580].R = 0x8001; //set interrupt core and priority
-// 	
-// 	HW_Init();
-// 	FlexCAN_0_Init();
-// 	FlexCAN_1_Init();
-// 	Configure_RX_MessageBuffer();
-// 	Transmit_Message();
-// 
-// 
-// 
-// 	for(;;) {	   
-// 	   	counter++;
-// 	}
-// 	
-// 	return 0;
-// }
+int main(void)
+{
+	int counter = 0;
+//	INTC.PSR[580].R = 0x8001; //set interrupt core and priority
+//
+//	hw_init();
+//	// FlexCAN_0_Init();
+//	FlexCAN_1_Init();
+//	Configure_RX_MessageBuffer();
+//	Transmit_Message();
+    Com_Init (&configuration);
+    CanIf_Init(&CanIfConfiguration);
+    Can_Init (&CanConfiguration);
+    PduR_Init(&PduRConfig);
+    Hardware_Init();
+
+	for(;;) {	   
+				uint8 Signal_Data = 5;
+		        Com_SendSignal(0, &Signal_Data);
+		        Com_MainFunctionTx();
+	}
+	
+	return 0;
+}

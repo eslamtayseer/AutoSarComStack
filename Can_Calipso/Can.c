@@ -1,6 +1,6 @@
 #include "Can.h"
 #include "Can_API.h"
-
+#include "MPC5748G.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <stddef.h>
@@ -11,7 +11,7 @@ const Can_ConfigType* CanCalipsoConfig;
 void Hardware_Init(){
 	INTC.PSR[580].R = 0x8001; //set interrupt core and priority
 	
-	HW_Init();
+	hw_init();
 	FlexCAN_1_Init();
 	Configure_RX_MessageBuffer();
 
