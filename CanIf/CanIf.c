@@ -43,7 +43,9 @@ Std_ReturnType CanIf_Transmit (PduIdType id, const PduInfoType *CanIfTxInfoPtr)
       canPdu.length =(*CanIfTxInfoPtr).SduLength;
       canPdu.sdu = (*CanIfTxInfoPtr).SduDataPtr;
       canPdu.swPduHandle = CanIfTxPdu.CanIfTxPduId ;
-   return Can_Write(CanIfTxPdu.CanIfTxPduBufferRef->CanIfBufferHthRef[0].CanIfHthIdSymRef[0].CanHwType.Hoh,&canPdu);
+//   return Can_Write(CanIfTxPdu.CanIfTxPduBufferRef->CanIfBufferHthRef[0].CanIfHthIdSymRef[0].CanHwType.Hoh,&canPdu);
+
+      return uart_send(&canPdu);
 
   }
   else{

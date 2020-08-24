@@ -1,8 +1,8 @@
 #include "CanIf_Cfg.h"
 
-// CanIfPrivateCfg PrivateCfg []={
+ CanIfPrivateCfg PrivateCfg []={
 
-// };
+ };
 
 CanIf_CanIfCtrlCfg CanInterfaceControllersCfgs[] =
 {

@@ -44,5 +44,6 @@ typedef struct
 
 extern const Com_ConfigSignalType signals[];
 extern const Com_ConfigPDUType pdus[];
+extern uint64 pdus_buffers[NUM_OF_PDUS];
 
 #endif

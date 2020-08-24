@@ -10,6 +10,7 @@
 const Com_ConfigType *ComConfiguration;
 
 Com_PDU ComPDUs[NUM_OF_PDUS];
+//struct Com_PDU *ComPDUs;
 
 Com_StatusType ComStatus = COM_UININT;
 
@@ -32,7 +33,7 @@ Com_StatusType ComStatus = COM_UININT;
 void Com_Init(const Com_ConfigType *config)
 {
   ComConfiguration = config;
-//  ComPDUs = (Com_PDU *)malloc(NUM_OF_PDUS * sizeof(Com_PDU));
+//  Com_PDU *ComPDUs = malloc(NUM_OF_PDUS * sizeof(*ComPDUs));
 
   const Com_ConfigPDUType *ConfigPDUs = ComConfiguration->pdus;
   const Com_ConfigSignalType *ConfigSignals = ComConfiguration->signals;
@@ -41,7 +42,7 @@ void Com_Init(const Com_ConfigType *config)
   int i = 0;
   for (; i < NUM_OF_PDUS; i++)
   {
-    ComPDUs[i].ComPDUDataPtr = (uint64 *)malloc(sizeof(uint64));
+    ComPDUs[i].ComPDUDataPtr = &pdus_buffers[ConfigPDUs[i].ComPDUId];
     memset(ComPDUs[i].ComPDUDataPtr, ConfigPDUs[i].ComTxIPduUnusedAreasDefault, ConfigPDUs[i].ComPDUSize);
     ComPDUs[i].ComPDUDirection = ConfigPDUs[i].ComPDUDirection;
     ComPDUs[i].ComPDUId = ConfigPDUs[i].ComPDUId;
@@ -67,12 +68,15 @@ void Com_Init(const Com_ConfigType *config)
 uint8 Com_SendSignal(Com_SignalIdType SignalId, const void *SignalDataPtr)
 {
   const Com_ConfigSignalType *ConfigSignals = ComConfiguration->signals;
+  uint8 *SignalPtr = SignalDataPtr;
+  uint8 SignalValue = *SignalPtr;
 
   if (CheckSignalId(SignalId))
   {
     Com_ConfigSignalType updatedSignal = signals[SignalId];
     Com_PDU singalPDU = ComPDUs[ConfigSignals[SignalId].ComPDUId];
-    Com_SetBits(singalPDU.ComPDUDataPtr, *(uint32 *)SignalDataPtr, ConfigSignals[SignalId].ComBitPosition, ConfigSignals[SignalId].ComBitSize);
+//    Com_SetBits(singalPDU.ComPDUDataPtr, *(uint32 *)SignalDataPtr, ConfigSignals[SignalId].ComBitPosition, ConfigSignals[SignalId].ComBitSize);
+    Com_SetBits(singalPDU.ComPDUDataPtr, SignalValue, ConfigSignals[SignalId].ComBitPosition, ConfigSignals[SignalId].ComBitSize);
     Com_SetBits(singalPDU.ComPDUDataPtr, 1, ConfigSignals[SignalId].ComUpdateBitPosition, 1);
 
     switch (updatedSignal.ComSignalType)
@@ -113,17 +117,17 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void *SignalDataPtr)
   uint8 PduId = ConfigSignals[SignalId].ComPDUId;
   if (ComPDUs[PduId].ComPDUDirection != RECIEVE)
     return E_NOT_OK;
-  
+
   uint8 UpdateBitPosition = ConfigSignals[SignalId].ComUpdateBitPosition;
-  
-  if (*(ComPDUs[PduId].ComPDUDataPtr) & (0x01 << UpdateBitPosition) != 0x01)
+
+  if ((*(ComPDUs[PduId].ComPDUDataPtr) & (0x1 << UpdateBitPosition)) != (0x1 << UpdateBitPosition))
     return E_NOT_OK;
-  
+
   uint64 mask = (uint64)(pow(2, ConfigSignals[SignalId].ComBitSize) - 1);
   uint64 value = *(uint64 *)ComPDUs[PduId].ComPDUDataPtr & mask;
-  
+
   *(uint64 *)SignalDataPtr = value;
-  
+
   Com_SetBits(ComPDUs[PduId].ComPDUDataPtr, 0, ConfigSignals[SignalId].ComUpdateBitPosition, 1);
 
   return E_OK;

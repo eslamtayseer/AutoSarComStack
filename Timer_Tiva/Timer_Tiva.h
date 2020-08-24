@@ -17,6 +17,8 @@
 void Timer_Init (uint32 TimerPeriod);
 uint32 Timer_Get_Value (void);
 uint32 Timer_Get_Period (void);
+void timer_int_handler(void);
+void Timer_SetToggleFlag(bool val);
 
 
 #endif /* TIMER_TIVA_H_ */
